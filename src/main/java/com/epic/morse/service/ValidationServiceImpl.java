@@ -30,8 +30,8 @@ public final class ValidationServiceImpl implements ValidationService {
         }
 
         if (createMorseCodeRegex().matcher(morseCode).find()) {
-            System.out.println("BAD");
-        } else System.out.println("GOOD");
+
+        }
     }
 
     private Pattern createMorseCodeRegex() {

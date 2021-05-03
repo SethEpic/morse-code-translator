@@ -32,6 +32,8 @@ public final class MorseCodeConfig {
     private static final ValidationService validationService = new ValidationServiceImpl();
     private static MorseCodeConfig configInstance = null;
     private boolean ignoreValidationExceptions = false;
+    private boolean isUsingDefaultLetterSeparator = true;
+    private boolean isUsingDefaultWordSeparator = true;
     //    private final static String defaultWordSeparator = "  ";
     //    private final static String defaultLetterSeparator = " ";
     //    private final static String defaultLetterSeparator = " ";
@@ -72,6 +74,7 @@ public final class MorseCodeConfig {
      */
     public final void setWordSeparator(String wordSeparator) {
         validationService.validateSeparator(wordSeparator, "wordSeparator");
+        this.isUsingDefaultWordSeparator = false;
         this.wordSeparator = wordSeparator;
     }
 
@@ -82,6 +85,7 @@ public final class MorseCodeConfig {
      */
     public final void setLetterSeparator(String letterSeparator) {
         validationService.validateSeparator(letterSeparator, "letterSeparator");
+        this.isUsingDefaultLetterSeparator = false;
         this.letterSeparator = letterSeparator;
     }
 

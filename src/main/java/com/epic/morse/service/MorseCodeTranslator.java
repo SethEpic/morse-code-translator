@@ -1,5 +1,7 @@
 package com.epic.morse.service;
 
+import com.epic.morse.config.MorseCodeConfig;
+
 /**
  * <h1>MorseCodeConverter</h1>
  * This class is used to convert text into morse code or morse code into text
@@ -12,29 +14,46 @@ public final class MorseCodeTranslator {
     private static final ValidationService validationService = new ValidationServiceImpl();
 
     public static void main(String[] args) {
-        convertToMorseCode("Hello World");
+        String morseCode = convertToMorseCode("Hello World");
+        System.out.println(morseCode);
+        System.out.println(convertToText(morseCode));
     }
 
     public static String convertToMorseCode(String message) {
-        validationService.validateTextToMorseCode(message);
-        StringBuilder morseCode = new StringBuilder();
         message = message.toUpperCase();
+        validationService.validateTextToMorseCode(message);
+
+        String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
+        String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
+        StringBuilder morseCode = new StringBuilder();
 
         for (char character : message.toCharArray()) {
-            if (character == (' ')) {
+            if (MorseCode.SPACE.getCharacter().equalsIgnoreCase(String.valueOf(character))) {
                 removeLastSpace(morseCode);
+                morseCode.append(wordSeparator);
+            } else {
+                morseCode.append(MorseCode.valueOfCharacter(String.valueOf(character)));
+                morseCode.append(letterSeparator);
             }
-            morseCode.append(MorseCode.valueOfCharacter(character));
         }
 
         removeLastSpace(morseCode);
-        System.out.println(morseCode);
         return morseCode.toString();
     }
 
-    public String convertToText(String morseCode) {
+    public static String convertToText(String morseCode) {
         validationService.validateMorseCodeToText(morseCode);
-        return null;
+        StringBuilder text = new StringBuilder();
+        String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
+        String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
+
+        for (String word : morseCode.split(Utils.createSpaceRegex(wordSeparator))) {
+            for (String letter : word.split(Utils.createSpaceRegex(letterSeparator))) {
+                text.append(MorseCode.valueOfMorseCode(letter.trim()));
+            }
+            text.append(" ");
+        }
+        return text.toString();
     }
 
     private static void removeLastSpace(StringBuilder morseCode) {
