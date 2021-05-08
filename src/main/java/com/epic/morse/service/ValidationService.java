@@ -5,5 +5,7 @@ public interface ValidationService {
 
     void validateMorseCodeToText(String morseCode);
 
-    void validateSeparator(String var1, String separatorName);
+    void validateWordSeparator(String var1);
+
+    void validateLetterSeparator(String var1);
 }

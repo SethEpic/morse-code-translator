@@ -34,9 +34,6 @@ public final class MorseCodeConfig {
     private boolean ignoreValidationExceptions = false;
     private boolean isUsingDefaultLetterSeparator = true;
     private boolean isUsingDefaultWordSeparator = true;
-    //    private final static String defaultWordSeparator = "  ";
-    //    private final static String defaultLetterSeparator = " ";
-    //    private final static String defaultLetterSeparator = " ";
     private String letterSeparator = " ";
     private String wordSeparator = "  ";
 
@@ -51,20 +48,7 @@ public final class MorseCodeConfig {
         if (configInstance == null) {
             configInstance = new MorseCodeConfig();
         }
-
         return configInstance;
-    }
-
-    public final String getWordSeparator() {
-        return this.wordSeparator;
-    }
-
-    public final String getLetterSeparator() {
-        return this.letterSeparator;
-    }
-
-    public final boolean getIgnoreValidationExceptions() {
-        return this.ignoreValidationExceptions;
     }
 
     /**
@@ -73,9 +57,17 @@ public final class MorseCodeConfig {
      * @param wordSeparator String that will be used to separate words
      */
     public final void setWordSeparator(String wordSeparator) {
-        validationService.validateSeparator(wordSeparator, "wordSeparator");
+        validationService.validateWordSeparator(wordSeparator);
         this.isUsingDefaultWordSeparator = false;
         this.wordSeparator = wordSeparator;
+    }
+
+    public final boolean isUsingDefaultWordSeparator() {
+        return this.isUsingDefaultWordSeparator;
+    }
+
+    public final String getWordSeparator() {
+        return this.wordSeparator;
     }
 
     /**
@@ -84,12 +76,16 @@ public final class MorseCodeConfig {
      * @param letterSeparator String that will be used to separate words
      */
     public final void setLetterSeparator(String letterSeparator) {
-        validationService.validateSeparator(letterSeparator, "letterSeparator");
+        validationService.validateLetterSeparator(letterSeparator);
         this.isUsingDefaultLetterSeparator = false;
         this.letterSeparator = letterSeparator;
     }
 
-    public final void setIgnoreValidationExceptions(boolean ignoreValidationExceptions) {
-        this.ignoreValidationExceptions = ignoreValidationExceptions;
+    public final String getLetterSeparator() {
+        return this.letterSeparator;
+    }
+
+    public final boolean isUsingDefaultLetterSeparator() {
+        return this.isUsingDefaultLetterSeparator;
     }
 }

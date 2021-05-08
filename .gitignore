@@ -1,3 +1,27 @@
 #/src/test/*
 #/src/main/java/com/epic/morse/service/package-info.java
 #/src/main/java/com/epic/morse/exception/package-info.java
+
+# Java
+target/
+
+# JavaScript
+*/bower_components/
+*/node_modules/
+
+# IntelliJ
+.idea
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+
+# Test Coverage/Results
+test-results.xml
+coverage/
+/.apt_generated/

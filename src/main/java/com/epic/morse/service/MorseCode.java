@@ -82,7 +82,7 @@ public enum MorseCode {
         for (MorseCode morseCode : MorseCode.values()) {
             if (morseCode.getCharacter().equalsIgnoreCase(character)) {
                 if (SPACE.equals(morseCode)) {
-                   return "";
+                    return "";
                 }
 
                 return morseCode.getMorseValue();

@@ -7,6 +7,11 @@ import com.epic.morse.exception.MorseCodeException;
 import java.util.regex.Pattern;
 
 public final class ValidationServiceImpl implements ValidationService {
+    private static final Pattern invalidCharRegex = Pattern.compile("([\\\\])");
+
+    public static void main(String[] args) {
+        System.out.println(new ValidationServiceImpl().createMorseCodeRegex());
+    }
 
     @Override
     public void validateTextToMorseCode(String text) {
@@ -34,34 +39,28 @@ public final class ValidationServiceImpl implements ValidationService {
         }
     }
 
-    private Pattern createMorseCodeRegex() {
-        MorseCodeConfig.getInstance().setLetterSeparator("'");
-        MorseCodeConfig.getInstance().setWordSeparator(" ");
-        String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
-        final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
-
-        String morseCodeRegex = "[^.-]+";
-        if (letterSeparator.isBlank() || wordSeparator.isBlank()) {
-            morseCodeRegex = morseCodeRegex.replace("[^", "[^\\s");
+    @Override
+    public void validateWordSeparator(String var1) {
+        if (var1 == null) {
+            throw new MorseCodeException(ExceptionMessages.INVALID_WORD_SEPARATOR_1);
         }
 
-        if (!letterSeparator.isBlank()) {
-            morseCodeRegex = morseCodeRegex.replace("-]+", letterSeparator + "-]+");
+        if (var1.isEmpty()) {
+            throw new MorseCodeException(ExceptionMessages.INVALID_WORD_SEPARATOR_2);
         }
 
-        if (!wordSeparator.isBlank()) {
-            morseCodeRegex = morseCodeRegex.replace("-]+", wordSeparator + "-]+");
+        if (MorseCodeConfig.getInstance().getLetterSeparator().equalsIgnoreCase(var1)) {
+            throw new MorseCodeException(ExceptionMessages.INVALID_WORD_SEPARATOR_3);
         }
 
-        return Pattern.compile(morseCodeRegex);
-    }
 
-    public static void main(String[] args) {
-        new ValidationServiceImpl().validateMorseCodeToText("...---...");
+        if (this.isAnyAlphaNumeric(var1)) {
+//            throw new MorseCodeException(String.format(ExceptionMessages.INVALID_SEPARATOR_3, separatorName));
+        }
     }
 
     @Override
-    public void validateSeparator(String var1, String separatorName) {
+    public void validateLetterSeparator(String var1) {
         if (var1 == null) {
             throw new MorseCodeException(ExceptionMessages.VALIDATION_ERROR_1);
         }
@@ -72,6 +71,18 @@ public final class ValidationServiceImpl implements ValidationService {
 
         if (this.isAnyAlphaNumeric(var1)) {
 //            throw new MorseCodeException(String.format(ExceptionMessages.INVALID_SEPARATOR_3, separatorName));
+        }
+    }
+
+    private Pattern createMorseCodeRegex() {
+        final MorseCodeConfig morseCodeConfig = MorseCodeConfig.getInstance();
+
+        if (morseCodeConfig.isUsingDefaultWordSeparator() && !morseCodeConfig.isUsingDefaultLetterSeparator()) {
+            return Pattern.compile("[^\\s.-]".replace("]", morseCodeConfig.getLetterSeparator() + "]"));
+        } else if (morseCodeConfig.isUsingDefaultLetterSeparator() && !morseCodeConfig.isUsingDefaultWordSeparator()) {
+            return Pattern.compile("[^\\s.-]".replace("]", morseCodeConfig.getWordSeparator() + "]"));
+        } else {
+            return Pattern.compile("[^\\s.-]");
         }
     }
 
