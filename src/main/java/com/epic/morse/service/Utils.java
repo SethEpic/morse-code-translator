@@ -1,40 +1,36 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
+import java.util.List;
 
 final class Utils {
+    static final List<String> escapeChars = List.of("<", "(", "[", "{", "\\", "^", "=", "$", "!", "|", "]", "}", ")", "?", "*", "+", ">");
 
-    static String createSpaceRegex(String var1) {
-        final String spaceRegexTemplate = "(?<=\\.|-)(\\s){%d}(?=\\.|-)";
-        return String.format(spaceRegexTemplate, numberOfSpaces(var1));
-    }
-
-    static String createWordSeparatorRegex() {
+    static String createSeparatorRegex(String separator) {
         final String spaceRegexTemplate = "(?<=\\.|-)%s(?=\\.|-)";
-        final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
 
-        if (wordSeparator.isBlank()) {
-            String separatorRegex = String.format("(\\s){%d}", numberOfSpaces(wordSeparator));
+        if (separator.isBlank()) {
+            String separatorRegex = String.format("(\\s){%d}", numberOfSpaces(separator));
             return String.format(spaceRegexTemplate, separatorRegex);
         }
 
-        if (separatorIsEscapeChar(wordSeparator)) {
-            return String.format("(?<=\\.|-)([\\%s])(?=\\.|-)", MorseCodeConfig.getInstance().getWordSeparator());
+        if (escapeChars.stream().anyMatch(separator::contains)) {
+            StringBuilder sb = new StringBuilder();
+            for (char c : separator.toCharArray()) {
+                if (escapeChars.contains(String.valueOf(c))) {
+                    sb.append("\\").append(c);
+                }
+            }
+
+            if (!sb.isEmpty()) {
+                return String.format("(?<=\\.|-)([%s])(?=\\.|-)", sb);
+            }
         }
 
-        return String.format("(?<=\\.|-)([%s])(?=\\.|-)", MorseCodeConfig.getInstance().getWordSeparator());
+        return String.format("(?<=\\.|-)([%s])(?=\\.|-)", separator);
     }
 
-    static int numberOfSpaces(String var1) {
-        if (var1 == null) {
-            return 0;
-        }
-
+    private static int numberOfSpaces(String var1) {
         long countOfSpaces = var1.chars().filter(c -> c == (int) ' ').count();
         return (int) (countOfSpaces);
-    }
-
-    private static boolean separatorIsEscapeChar(String separator) {
-        return separator.equals("\\");
     }
 }

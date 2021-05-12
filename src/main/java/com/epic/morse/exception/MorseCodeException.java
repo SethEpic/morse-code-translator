@@ -1,8 +1,6 @@
 package com.epic.morse.exception;
 
-/**
- * @author SethEpic*/
-public class MorseCodeException extends RuntimeException {
+public final class MorseCodeException extends RuntimeException {
     private final String errorMessage;
 
     public MorseCodeException(String errorMessage) {

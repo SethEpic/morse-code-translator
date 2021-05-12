@@ -1,7 +1,5 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
-
 public enum MorseCode {
     A(".-", "A"),
     B("-...", "B"),
@@ -42,14 +40,12 @@ public enum MorseCode {
     SPACE(" ", " "),
     PERIOD(".-.-.-", "."),
     EXCLAMATION_POINT("-.-.--", "!"),
-    //    INVERTED_EXCLAMATION_POINT("--...-", "¡"),
     COMMA("--..--", ","),
     APOSTROPHE(".----.", "'"),
     SLASH("-..-.", "/"),
     OPEN_PARENTHESIS("-.--.", "("),
     CLOSE_PARENTHESIS("-.--.-", ")"),
     QUESTION_MARK("..--..", "?"),
-    //    INVERTED_QUESTION_MARK("..-.-", "¿"),
     AMPERSAND(".-...", "&"),
     COLON("---...", ":"),
     SEMI_COLON("-.-.-.", ";"),
@@ -59,8 +55,7 @@ public enum MorseCode {
     UNDERSCORE("..--.-", "_"),
     QUOTATION_MARK(".-..-.", "\""),
     DOLLAR_SIGN("...-..-", "$"),
-    AT_SIGN(".--.-.", "@"),
-    EMPTY(MorseCodeConfig.getInstance().getWordSeparator(), " ");
+    AT_SIGN(".--.-.", "@");
 
     private final String morseValue;
     private final String character;
@@ -81,14 +76,10 @@ public enum MorseCode {
     public static String valueOfCharacter(String character) {
         for (MorseCode morseCode : MorseCode.values()) {
             if (morseCode.getCharacter().equalsIgnoreCase(character)) {
-                if (SPACE.equals(morseCode)) {
-                    return "";
-                }
-
                 return morseCode.getMorseValue();
             }
         }
-        return null;
+        return "";
     }
 
     public static String valueOfMorseCode(String word) {

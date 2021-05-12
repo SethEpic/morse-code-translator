@@ -2,32 +2,20 @@ package com.epic.morse.service;
 
 import com.epic.morse.config.MorseCodeConfig;
 
-/**
- * <h1>MorseCodeConverter</h1>
- * This class is used to convert text into morse code or morse code into text
- *
- * @author SethEpic
- * @version 1.0.0
- * @since 1.0.0
- */
 public final class MorseCodeTranslator {
     private static final ValidationService validationService = new ValidationServiceImpl();
 
     public static void main(String[] args) {
-//        MorseCodeConfig.getInstance().setWordSeparator("/");
-        String morseCode = convertToMorseCode("Hello    World");
-        System.out.println(morseCode);
-        System.out.println(convertToText(morseCode));
-
-
-        MorseCodeConfig.getInstance().setWordSeparator("\\");
-        morseCode = convertToMorseCode("Hello    World");
-        System.out.println(morseCode);
-        System.out.println(convertToText(morseCode));
+        Utils.escapeChars.forEach(c -> {
+            MorseCodeConfig.getInstance().setWordSeparator(String.valueOf(c));
+            String morseCode = convertToMorseCode("Hello world");
+            System.out.println(morseCode);
+            System.out.println(convertToText(morseCode));
+        });
     }
 
     public static String convertToMorseCode(String message) {
-        message = message.toUpperCase().replaceAll("\\s+", " ");
+        message = message.trim().toUpperCase().replaceAll("\\s+", " ");
         validationService.validateTextToMorseCode(message);
 
         final String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
@@ -35,47 +23,33 @@ public final class MorseCodeTranslator {
         StringBuilder morseCode = new StringBuilder();
 
         for (char character : message.toCharArray()) {
-            if (isSpace(character)) {
+            if (Character.isWhitespace(character)) {
                 removeLastSpace(morseCode);
                 morseCode.append(wordSeparator);
-            } else {
-                morseCode.append(MorseCode.valueOfCharacter(String.valueOf(character)));
-                morseCode.append(letterSeparator);
+                continue;
             }
+            morseCode.append(MorseCode.valueOfCharacter(String.valueOf(character)));
+            morseCode.append(letterSeparator);
         }
 
-        removeLastSpace(morseCode);
-        return morseCode.toString();
+        return morseCode.toString().trim();
     }
 
     public static String convertToText(String morseCode) {
+        morseCode = morseCode.trim();
         validationService.validateMorseCodeToText(morseCode);
-        StringBuilder text = new StringBuilder();
-        String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
+        StringBuilder convertedToText = new StringBuilder();
+        final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
+        final String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
 
-        for (String word : morseCode.split(Utils.createWordSeparatorRegex())) {
-            for (String letter : word.split(Utils.createSpaceRegex(letterSeparator))) {
-                text.append(MorseCode.valueOfMorseCode(letter.trim()));
+        for (String word : morseCode.split(Utils.createSeparatorRegex(wordSeparator))) {
+            for (String letter : word.split(Utils.createSeparatorRegex(letterSeparator))) {
+                convertedToText.append(MorseCode.valueOfMorseCode(letter.trim()));
             }
-            text.append(" ");
+            convertedToText.append(" ");
         }
-        return text.toString();
-    }
 
-    private static char lastChar(StringBuilder morseCode) {
-        if (morseCode.length() > 0) {
-            return morseCode.charAt(morseCode.length() - 1);
-        } else {
-            return '-';
-        }
-    }
-
-    private static boolean isSpace(char c) {
-        return MorseCode.SPACE.getCharacter().equalsIgnoreCase(String.valueOf(c));
-    }
-
-    private static boolean isWordSeparator(char c) {
-        return MorseCodeConfig.getInstance().getWordSeparator().equalsIgnoreCase(String.valueOf(c));
+        return convertedToText.toString().trim();
     }
 
     private static void removeLastSpace(StringBuilder morseCode) {
