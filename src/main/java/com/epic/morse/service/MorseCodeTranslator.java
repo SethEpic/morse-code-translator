@@ -5,15 +5,6 @@ import com.epic.morse.config.MorseCodeConfig;
 public final class MorseCodeTranslator {
     private static final ValidationService validationService = new ValidationServiceImpl();
 
-    public static void main(String[] args) {
-        Utils.escapeChars.forEach(c -> {
-            MorseCodeConfig.getInstance().setWordSeparator(String.valueOf(c));
-            String morseCode = convertToMorseCode("Hello world");
-            System.out.println(morseCode);
-            System.out.println(convertToText(morseCode));
-        });
-    }
-
     public static String convertToMorseCode(String message) {
         message = message.trim().toUpperCase().replaceAll("\\s+", " ");
         validationService.validateTextToMorseCode(message);
