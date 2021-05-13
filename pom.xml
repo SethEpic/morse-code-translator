@@ -5,7 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>morse-code-translator</name>
-  <description>A morse code translator written in java. It can convert text to morse code and morse code to text</description>
+  <description>A morse code translator written in java. It can convert text to morse code and morse code to text
+  </description>
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
@@ -28,6 +29,12 @@
   <developers>
     <developer>
       <name>Seth</name>
+      <email>SethEpicDeveloper@gmail.com</email>
+      <url>https://github.com/SethEpic/</url>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>America/Chicago</timezone>
     </developer>
   </developers>
 
