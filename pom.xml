@@ -9,14 +9,96 @@
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0-SNAPSHOT</version>
   <url>https://github.com/SethEpic/morse-code-translator</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>15</maven.compiler.source>
-    <maven.compiler.target>15</maven.compiler.target>
+<!--    <maven.compiler.source>15</maven.compiler.source>-->
+<!--    <maven.compiler.target>15</maven.compiler.target>-->
   </properties>
+
+<!--  <distributionManagement>-->
+<!--    <snapshotRepository>-->
+<!--      <id>nexus-snapshots</id>-->
+<!--      <url>http://localhost:8081/nexus/content/repositories/snapshots</url>-->
+<!--    </snapshotRepository>-->
+<!--    <repository>-->
+<!--      <id>nexus-releases</id>-->
+<!--      <url>http://localhost:8081/nexus/content/repositories/releases</url>-->
+<!--    </repository>-->
+<!--  </distributionManagement>-->
+
+<!--  <build>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.sonatype.plugins</groupId>-->
+<!--        <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--        <version>1.6.3</version>-->
+<!--        <extensions>true</extensions>-->
+<!--        <configuration>-->
+<!--          <serverId>nexus-releases</serverId>-->
+<!--          <nexusUrl>http://localhost:8081/nexus/</nexusUrl>-->
+<!--          &lt;!&ndash; update this to the correct id! &ndash;&gt;-->
+<!--          <stagingProfileId>1c44d16c9dd1e7</stagingProfileId>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </build>-->
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--  <build>-->
+  <!--    <plugins>-->
+  <!--      <plugin>-->
+  <!--        <groupId>org.apache.maven.plugins</groupId>-->
+  <!--        <artifactId>maven-deploy-plugin</artifactId>-->
+  <!--        <version>3.0.0-M1</version>-->
+  <!--        <configuration>-->
+  <!--          <skip>true</skip>-->
+  <!--        </configuration>-->
+  <!--      </plugin>-->
+  <!--      <plugin>-->
+  <!--        <groupId>org.sonatype.plugins</groupId>-->
+  <!--        <artifactId>nexus-staging-maven-plugin</artifactId>-->
+  <!--        <executions>-->
+  <!--          <execution>-->
+  <!--            <id>default-deploy</id>-->
+  <!--            <phase>deploy</phase>-->
+  <!--            <goals>-->
+  <!--              <goal>deploy</goal>-->
+  <!--            </goals>-->
+  <!--          </execution>-->
+  <!--        </executions>-->
+  <!--        <configuration>-->
+  <!--          <serverId>nexus</serverId>-->
+  <!--          <nexusUrl>http://localhost:8081/nexus/</nexusUrl>-->
+  <!--          &lt;!&ndash; explicit matching using the staging profile id &ndash;&gt;-->
+  <!--          <stagingProfileId>1c44d16c9dd1e7</stagingProfileId>-->
+  <!--        </configuration>-->
+  <!--      </plugin>-->
+  <!--    </plugins>-->
+  <!--  </build>-->
 
   <licenses>
     <license>
@@ -34,6 +116,8 @@
         <role>developer</role>
       </roles>
       <timezone>America/Chicago</timezone>
+      <organization>N/A</organization>
+      <organizationUrl>N/A</organizationUrl>
     </developer>
   </developers>
 
