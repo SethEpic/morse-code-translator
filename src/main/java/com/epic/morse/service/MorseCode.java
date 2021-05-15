@@ -82,9 +82,9 @@ public enum MorseCode {
         return "";
     }
 
-    public static String valueOfMorseCode(String word) {
+    public static String getCharacterByMorseCodeLetter(String morseCodeLetter) {
         for (MorseCode morseCode : MorseCode.values()) {
-            if (morseCode.getMorseValue().equalsIgnoreCase(word)) {
+            if (morseCode.getMorseValue().equalsIgnoreCase(morseCodeLetter)) {
                 return morseCode.getCharacter();
             }
         }
