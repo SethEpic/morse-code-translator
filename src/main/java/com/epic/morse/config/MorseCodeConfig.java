@@ -1,5 +1,6 @@
 package com.epic.morse.config;
 
+import com.epic.morse.service.MorseCodeType;
 import com.epic.morse.service.ValidationService;
 import com.epic.morse.service.ValidationServiceImpl;
 
@@ -8,6 +9,7 @@ public final class MorseCodeConfig {
     private static MorseCodeConfig configInstance = null;
     private String letterSeparator = " ";
     private String wordSeparator = "  ";
+    private MorseCodeType morseCodeType = MorseCodeType.INTERNATIONAL;
 
     private MorseCodeConfig() {
     }
@@ -35,5 +37,13 @@ public final class MorseCodeConfig {
 
     public final String getLetterSeparator() {
         return this.letterSeparator;
+    }
+
+    public final MorseCodeType getMorseCodeType() {
+        return this.morseCodeType;
+    }
+
+    public final void setMorseCodeType(MorseCodeType morseCodeType) {
+        this.morseCodeType = morseCodeType;
     }
 }

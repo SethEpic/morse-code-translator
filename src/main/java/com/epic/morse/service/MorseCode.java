@@ -1,93 +1,76 @@
 package com.epic.morse.service;
 
-public enum MorseCode {
-    A(".-", "A"),
-    B("-...", "B"),
-    C("-.-.", "C"),
-    D("-..", "D"),
-    E(".", "E"),
-    F("..-.", "F"),
-    G("--.", "G"),
-    H("....", "H"),
-    I("..", "I"),
-    J(".---", "J"),
-    K("-.-", "K"),
-    L(".-..", "L"),
-    M("--", "M"),
-    N("-.", "N"),
-    O("---", "O"),
-    P(".--.", "P"),
-    Q("--.-", "Q"),
-    R(".-.", "R"),
-    S("...", "S"),
-    T("-", "T"),
-    U("..-", "U"),
-    V("...-", "V"),
-    W(".--", "W"),
-    X("-..-", "X"),
-    Y("-.--", "Y"),
-    Z("--..", "Z"),
-    _1(".----", "1"),
-    _2("..---", "2"),
-    _3("...--", "3"),
-    _4("....-", "4"),
-    _5(".....", "5"),
-    _6("-....", "6"),
-    _7("--...", "7"),
-    _8("---..", "8"),
-    _9("----.", "9"),
-    _0("-----", "0"),
-    SPACE(" ", " "),
-    PERIOD(".-.-.-", "."),
-    EXCLAMATION_POINT("-.-.--", "!"),
-    COMMA("--..--", ","),
-    APOSTROPHE(".----.", "'"),
-    SLASH("-..-.", "/"),
-    OPEN_PARENTHESIS("-.--.", "("),
-    CLOSE_PARENTHESIS("-.--.-", ")"),
-    QUESTION_MARK("..--..", "?"),
-    AMPERSAND(".-...", "&"),
-    COLON("---...", ":"),
-    SEMI_COLON("-.-.-.", ";"),
-    EQUAL_SIGN("-...-", "="),
-    PLUS_SIGN(".-.-.", "+"),
-    HYPHEN("-....-", "-"),
-    UNDERSCORE("..--.-", "_"),
-    QUOTATION_MARK(".-..-.", "\""),
-    DOLLAR_SIGN("...-..-", "$"),
-    AT_SIGN(".--.-.", "@");
+import com.epic.morse.config.MorseCodeConfig;
 
-    private final String morseValue;
-    private final String character;
+import static com.epic.morse.service.Utils.multiSpaceRegex;
 
-    MorseCode(String morseValue, String character) {
-        this.morseValue = morseValue;
-        this.character = character;
+public final class MorseCode {
+    private static final ValidationService validationService = new ValidationServiceImpl();
+    private static final String SPACE = " ";
+
+    public static String convertToMorseCode(String message) {
+        validationService.validateTextToMorseCode(message);
+        final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
+        final String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
+        final MorseCodeType type = MorseCodeConfig.getInstance().getMorseCodeType();
+        return covertCharsToMorseCode(message, type, wordSeparator, letterSeparator);
     }
 
-    public final String getMorseValue() {
-        return morseValue;
+    public static String convertToText(String morseCode) {
+        validationService.validateMorseCodeToText(morseCode);
+        final String wordSeparatorRegex = Utils.createWordSeparatorRegex();
+        final String letterSeparatorRegex = Utils.createLetterSeparatorRegex();
+        final MorseCodeType type = MorseCodeConfig.getInstance().getMorseCodeType();
+        return convertMorseCodeToText(morseCode, type, wordSeparatorRegex, letterSeparatorRegex);
     }
 
-    public final String getCharacter() {
-        return character;
-    }
+    private static String covertCharsToMorseCode(String message, MorseCodeType type, String wordSeparator, String letterSeparator) {
+        StringBuilder morseCodeBuilder = new StringBuilder();
 
-    public static String valueOfCharacter(String character) {
-        for (MorseCode morseCode : MorseCode.values()) {
-            if (morseCode.getCharacter().equalsIgnoreCase(character)) {
-                return morseCode.getMorseValue();
+        for (char character : message.toUpperCase().trim().replaceAll(multiSpaceRegex, SPACE).toCharArray()) {
+            if (Character.isWhitespace(character)) {
+                appendSpace(morseCodeBuilder, wordSeparator, letterSeparator);
+                continue;
             }
+
+            String morseCodeCharacter = MorseCodeLanguages.getMorseCodeCharacter(type, String.valueOf(character));
+            morseCodeBuilder.append(morseCodeCharacter).append(letterSeparator);
         }
-        return "";
+
+        removeSeparatorsAtEnd(morseCodeBuilder, wordSeparator, letterSeparator);
+        return morseCodeBuilder.toString().trim();
     }
 
-    public static String getCharacterByMorseCodeLetter(String morseCodeLetter) {
-        for (MorseCode morseCode : MorseCode.values()) {
-            if (morseCode.getMorseValue().equalsIgnoreCase(morseCodeLetter)) {
-                return morseCode.getCharacter();
+    private static String convertMorseCodeToText(String morseCode, MorseCodeType type, String wordSeparatorRegex, String letterSeparatorRegex) {
+        StringBuilder convertedToText = new StringBuilder();
+
+        for (String word : morseCode.trim().split(wordSeparatorRegex)) {
+            for (String letter : word.split(letterSeparatorRegex)) {
+                convertedToText.append(MorseCodeLanguages.getTextCharacter(type, letter));
             }
+            convertedToText.append(SPACE);
         }
-        return "";
+
+        return convertedToText.toString().trim();
+    }
+
+    private static void appendSpace(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
+        final String morseCodeString = morseCodeBuilder.toString().trim();
+
+        if (morseCodeString.endsWith(letterSeparator)) {
+            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "").append(wordSeparator);
+        }
+    }
+
+    private static void removeSeparatorsAtEnd(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
+        final String morseCodeString = morseCodeBuilder.toString().trim();
+
+        if (morseCodeString.endsWith(letterSeparator)) {
+            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
+        }
+
+        if (morseCodeString.endsWith(wordSeparator)) {
+            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
+        }
     }
 }

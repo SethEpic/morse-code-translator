@@ -1,9 +1,20 @@
 package com.epic.morse.service;
 
+import com.epic.morse.config.MorseCodeConfig;
+
 import java.util.List;
 
 final class Utils {
-   private static final List<String> escapeChars = List.of("<", "(", "[", "{", "\\", "^", "=", "$", "!", "|", "]", "}", ")", "?", "*", "+", ">");
+    private static final List<String> escapeChars = List.of("<", "(", "[", "{", "\\", "^", "=", "$", "!", "|", "]", "}", ")", "?", "*", "+", ">");
+    static final String multiSpaceRegex = "\\s+";
+
+    static String createWordSeparatorRegex() {
+        return createSeparatorRegex(MorseCodeConfig.getInstance().getWordSeparator());
+    }
+
+    static String createLetterSeparatorRegex() {
+        return createSeparatorRegex(MorseCodeConfig.getInstance().getLetterSeparator());
+    }
 
     static String createSeparatorRegex(String separator) {
         final String spaceRegexTemplate = "(?<=\\.|-)%s(?=\\.|-)";
