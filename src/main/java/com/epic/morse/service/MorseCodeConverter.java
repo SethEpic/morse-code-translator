@@ -77,7 +77,7 @@ public final class MorseCodeConverter {
         }
 
         if (morseCodeString.endsWith(wordSeparator)) {
-            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
+            morseCodeBuilder.replace(morseCodeBuilder.length() - wordSeparator.length(), morseCodeBuilder.length(), "");
         }
     }
 }

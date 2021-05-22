@@ -39,9 +39,4 @@ final class Utils {
 
         return String.format("(?<=\\.|-)([%s])(?=\\.|-)", separator);
     }
-
-    private static int numberOfSpaces(String var1) {
-        long countOfSpaces = var1.chars().filter(c -> c == (int) ' ').count();
-        return (int) (countOfSpaces);
-    }
 }
