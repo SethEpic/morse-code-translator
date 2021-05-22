@@ -1,12 +1,13 @@
 package com.epic.morse.config;
 
+import com.epic.morse.service.MorseCode;
 import com.epic.morse.service.MorseCodeType;
 import com.epic.morse.service.ValidationService;
 import com.epic.morse.service.ValidationServiceImpl;
 
 public final class MorseCodeConfig {
     private static final ValidationService validationService = new ValidationServiceImpl();
-    private static MorseCodeConfig configInstance = null;
+    private static volatile MorseCodeConfig configInstance = null;
     private String letterSeparator = " ";
     private String wordSeparator = "  ";
     private MorseCodeType morseCodeType = MorseCodeType.INTERNATIONAL;
@@ -16,7 +17,11 @@ public final class MorseCodeConfig {
 
     public static MorseCodeConfig getInstance() {
         if (configInstance == null) {
-            configInstance = new MorseCodeConfig();
+            synchronized (MorseCodeConfig.class) {
+                if (configInstance == null) {
+                    configInstance = new MorseCodeConfig();
+                }
+            }
         }
         return configInstance;
     }
@@ -44,6 +49,11 @@ public final class MorseCodeConfig {
     }
 
     public final void setMorseCodeType(MorseCodeType morseCodeType) {
+        if (this.morseCodeType.equals(morseCodeType)) {
+            return;
+        }
+
         this.morseCodeType = morseCodeType;
+        MorseCode.setLanguageCaches(morseCodeType);
     }
 }
