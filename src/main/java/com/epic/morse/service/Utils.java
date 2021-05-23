@@ -26,9 +26,10 @@ final class Utils {
 
         if (escapeChars.stream().anyMatch(separator::contains)) {
             StringBuilder sb = new StringBuilder();
-            for (char c : separator.toCharArray()) {
-                if (escapeChars.contains(String.valueOf(c))) {
-                    sb.append("\\").append(c);
+            char[] separatorChars = separator.toCharArray();
+            for (char character : separatorChars) {
+                if (escapeChars.contains(String.valueOf(character))) {
+                    sb.append("\\").append(character);
                 }
             }
 

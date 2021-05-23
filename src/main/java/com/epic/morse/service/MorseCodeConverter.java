@@ -11,12 +11,6 @@ public final class MorseCodeConverter {
     private MorseCodeConverter() {
     }
 
-    public static void main(String[] args) {
-        String test = convertToMorseCode("ABC");
-        System.out.println(test);
-        System.out.println(convertToText(test));
-    }
-
     public static String convertToMorseCode(String message) {
         validationService.validateTextToMorseCode(message);
         final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
@@ -34,7 +28,8 @@ public final class MorseCodeConverter {
     private static String covertTextToMorseCode(String message, String wordSeparator, String letterSeparator) {
         StringBuilder morseCodeBuilder = new StringBuilder();
 
-        for (char character : message.toUpperCase().trim().replaceAll(multiSpaceRegex, SPACE).toCharArray()) {
+        char[] characters = message.toUpperCase().trim().replaceAll(multiSpaceRegex, SPACE).toCharArray();
+        for (char character : characters) {
             if (Character.isWhitespace(character)) {
                 appendSpace(morseCodeBuilder, wordSeparator, letterSeparator);
                 continue;
@@ -51,8 +46,10 @@ public final class MorseCodeConverter {
     private static String convertMorseCodeToText(String morseCode, String wordSeparatorRegex, String letterSeparatorRegex) {
         StringBuilder convertedToText = new StringBuilder();
 
-        for (String word : morseCode.trim().split(wordSeparatorRegex)) {
-            for (String letter : word.split(letterSeparatorRegex)) {
+        String[] words = morseCode.trim().split(wordSeparatorRegex);
+        for (String word : words) {
+            String[] letters = word.split(letterSeparatorRegex);
+            for (String letter : letters) {
                 convertedToText.append(MorseCode.getTextCharacter(letter));
             }
             convertedToText.append(SPACE);
@@ -62,21 +59,18 @@ public final class MorseCodeConverter {
     }
 
     private static void appendSpace(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
-        final String morseCodeString = morseCodeBuilder.toString().trim();
-
-        if (morseCodeString.endsWith(letterSeparator)) {
-            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "").append(wordSeparator);
+        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length() - 1)) {
+            morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
         }
+        morseCodeBuilder.append(wordSeparator);
     }
 
     private static void removeSeparatorsAtEnd(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
-        final String morseCodeString = morseCodeBuilder.toString().trim();
-
-        if (morseCodeString.endsWith(letterSeparator)) {
+        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length())) {
             morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
         }
 
-        if (morseCodeString.endsWith(wordSeparator)) {
+        if (morseCodeBuilder.lastIndexOf(wordSeparator) == (morseCodeBuilder.length())) {
             morseCodeBuilder.replace(morseCodeBuilder.length() - wordSeparator.length(), morseCodeBuilder.length(), "");
         }
     }
