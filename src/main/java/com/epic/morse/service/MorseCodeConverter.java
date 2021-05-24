@@ -11,6 +11,12 @@ public final class MorseCodeConverter {
     private MorseCodeConverter() {
     }
 
+    public static void main(String[] args) {
+        MorseCodeConfig.getInstance().setLetterSeparator("   ");
+        String test = convertToMorseCode("Hello world");
+        System.out.println(convertToText(test));
+    }
+
     public static String convertToMorseCode(String message) {
         validationService.validateTextToMorseCode(message);
         final String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
@@ -59,18 +65,18 @@ public final class MorseCodeConverter {
     }
 
     private static void appendSpace(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
-        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length() - 1)) {
+        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length() - letterSeparator.length())) {
             morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
         }
         morseCodeBuilder.append(wordSeparator);
     }
 
     private static void removeSeparatorsAtEnd(StringBuilder morseCodeBuilder, String wordSeparator, String letterSeparator) {
-        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length())) {
+        if (morseCodeBuilder.lastIndexOf(letterSeparator) == (morseCodeBuilder.length() - letterSeparator.length())) {
             morseCodeBuilder.replace(morseCodeBuilder.length() - letterSeparator.length(), morseCodeBuilder.length(), "");
         }
 
-        if (morseCodeBuilder.lastIndexOf(wordSeparator) == (morseCodeBuilder.length())) {
+        if (morseCodeBuilder.lastIndexOf(wordSeparator) == (morseCodeBuilder.length() - wordSeparator.length())) {
             morseCodeBuilder.replace(morseCodeBuilder.length() - wordSeparator.length(), morseCodeBuilder.length(), "");
         }
     }
