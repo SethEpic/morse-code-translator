@@ -2,6 +2,8 @@ package com.epic.morse.service;
 
 import com.epic.morse.config.MorseCodeConfig;
 
+import java.util.Arrays;
+
 import static com.epic.morse.service.Utils.multiSpaceRegex;
 
 public final class MorseCodeConverter {
@@ -12,8 +14,11 @@ public final class MorseCodeConverter {
     }
 
     public static void main(String[] args) {
-        MorseCodeConfig.getInstance().setLetterSeparator("   ");
-        String test = convertToMorseCode("Hello world");
+//        char c = '\u2009';
+
+//        MorseCodeConfig.getInstance().setMorseCodeType(MorseCodeType.AMERICAN);
+        String test = convertToMorseCode("Hello World");
+        System.out.println(test);
         System.out.println(convertToText(test));
     }
 
@@ -33,10 +38,11 @@ public final class MorseCodeConverter {
 
     private static String covertTextToMorseCode(String message, String wordSeparator, String letterSeparator) {
         StringBuilder morseCodeBuilder = new StringBuilder();
-
         char[] characters = message.toUpperCase().trim().replaceAll(multiSpaceRegex, SPACE).toCharArray();
+
         for (char character : characters) {
             if (Character.isWhitespace(character)) {
+                System.out.println("hi");
                 appendSpace(morseCodeBuilder, wordSeparator, letterSeparator);
                 continue;
             }
@@ -51,8 +57,8 @@ public final class MorseCodeConverter {
 
     private static String convertMorseCodeToText(String morseCode, String wordSeparatorRegex, String letterSeparatorRegex) {
         StringBuilder convertedToText = new StringBuilder();
-
         String[] words = morseCode.trim().split(wordSeparatorRegex);
+
         for (String word : words) {
             String[] letters = word.split(letterSeparatorRegex);
             for (String letter : letters) {

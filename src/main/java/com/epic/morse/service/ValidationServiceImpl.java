@@ -81,10 +81,9 @@ public final class ValidationServiceImpl implements ValidationService {
     }
 
     private boolean isAnyAlphaNumeric(String var1) {
-        final MorseCodeConfig morseCodeConfig = MorseCodeConfig.getInstance();
-        String wordRegex = Utils.createSeparatorRegex(morseCodeConfig.getWordSeparator());
-        String letterRegex = Utils.createSeparatorRegex(morseCodeConfig.getLetterSeparator());
-        var1 = var1.replaceAll(wordRegex, "").replaceAll(letterRegex, "");
+        String wordSeparatorRegex = Utils.createWordSeparatorRegex();
+        String letterSeparatorRegex = Utils.createLetterSeparatorRegex();
+        var1 = var1.replaceAll(wordSeparatorRegex, "").replaceAll(letterSeparatorRegex, "");
         return var1.chars().anyMatch(Character::isLetterOrDigit);
     }
 }

@@ -8,6 +8,8 @@ import com.epic.morse.service.ValidationServiceImpl;
 public final class MorseCodeConfig {
     private static final ValidationService validationService = new ValidationServiceImpl();
     private static volatile MorseCodeConfig configInstance = null;
+    public static final String THIN_SPACE = "\u2009";
+    public static final String HAIR_SPACE = "\u200A";
     private String letterSeparator = " ";
     private String wordSeparator = "  ";
     private MorseCodeType morseCodeType = MorseCodeType.INTERNATIONAL;

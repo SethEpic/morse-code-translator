@@ -13,11 +13,21 @@ final class Utils {
     }
 
     static String createLetterSeparatorRegex() {
+        if (MorseCodeType.AMERICAN.equals(MorseCodeConfig.getInstance().getMorseCodeType())) {
+//            return " ";
+//            return "(?<=\\.|-|\\)%s(?=\\.|-|\\s)";
+        }
         return createSeparatorRegex(MorseCodeConfig.getInstance().getLetterSeparator());
     }
 
     static String createSeparatorRegex(String separator) {
-        final String spaceRegexTemplate = "(?<=\\.|-)%s(?=\\.|-)";
+        if (MorseCodeConfig.THIN_SPACE.equals(separator)) {
+            return MorseCodeConfig.THIN_SPACE;
+        } else if (MorseCodeConfig.HAIR_SPACE.equals(separator)) {
+            return MorseCodeConfig.HAIR_SPACE;
+        }
+
+        final String spaceRegexTemplate = "(?<=\\.|-|\u2006)%s(?=\\.|-|\u2006)";
 
         if (separator.isBlank()) {
             String separatorRegex = String.format("(\\s){%d}", separator.length());
