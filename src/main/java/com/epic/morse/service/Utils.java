@@ -6,17 +6,15 @@ import java.util.List;
 
 final class Utils {
     private static final List<String> escapeChars = List.of("<", "(", "[", "{", "\\", "^", "=", "$", "!", "|", "]", "}", ")", "?", "*", "+", ">");
+    private static final String spaceRegexTemplate = "(?<=\\.|-|\\s*)%s(?=\\.|-|\\s*)";
     static final String multiSpaceRegex = "\\s+";
+    static final String SPACE = " ";
 
     static String createWordSeparatorRegex() {
         return createSeparatorRegex(MorseCodeConfig.getInstance().getWordSeparator());
     }
 
     static String createLetterSeparatorRegex() {
-        if (MorseCodeType.AMERICAN.equals(MorseCodeConfig.getInstance().getMorseCodeType())) {
-//            return " ";
-//            return "(?<=\\.|-|\\)%s(?=\\.|-|\\s)";
-        }
         return createSeparatorRegex(MorseCodeConfig.getInstance().getLetterSeparator());
     }
 
@@ -26,8 +24,6 @@ final class Utils {
         } else if (MorseCodeConfig.HAIR_SPACE.equals(separator)) {
             return MorseCodeConfig.HAIR_SPACE;
         }
-
-        final String spaceRegexTemplate = "(?<=\\.|-|\u2006)%s(?=\\.|-|\u2006)";
 
         if (separator.isBlank()) {
             String separatorRegex = String.format("(\\s){%d}", separator.length());
@@ -44,10 +40,10 @@ final class Utils {
             }
 
             if (!sb.isEmpty()) {
-                return String.format("(?<=\\.|-)([%s])(?=\\.|-)", sb);
+                return String.format("(?<=\\.|-|\\s*)([%s])(?=\\.|-|\\s*)", sb);
             }
         }
 
-        return String.format("(?<=\\.|-)([%s])(?=\\.|-)", separator);
+        return String.format("(?<=\\.|-|\\s*)([%s])(?=\\.|-|\\s*)", separator);
     }
 }

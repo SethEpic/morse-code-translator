@@ -80,10 +80,22 @@ public final class ValidationServiceImpl implements ValidationService {
         }
     }
 
+    @Override
+    public void validateMorseCodeType(MorseCodeType type, boolean isUsingDefaultWordSeparator, boolean isUsingDefaultLetterSeparator) {
+        if (type.equals(MorseCodeType.INTERNATIONAL)) {
+            return;
+        }
+
+//        if (type.equals(MorseCodeType.AMERICAN)) {
+//            if (MorseCodeConfig.getInstance().isUsingDefaultWordSeparator()) {
+//             throw new MorseCodeException("Due to the spacing for the letter gaps in american morse code please set the word separator, if you use spaces please set 3 or more or any number of any other char");
+//            }
+//        }
+    }
+
     private boolean isAnyAlphaNumeric(String var1) {
-        String wordSeparatorRegex = Utils.createWordSeparatorRegex();
-        String letterSeparatorRegex = Utils.createLetterSeparatorRegex();
-        var1 = var1.replaceAll(wordSeparatorRegex, "").replaceAll(letterSeparatorRegex, "");
-        return var1.chars().anyMatch(Character::isLetterOrDigit);
+        String wordSeparator = MorseCodeConfig.getInstance().getWordSeparator();
+        String letterSeparator = MorseCodeConfig.getInstance().getLetterSeparator();
+        return var1.replaceAll(wordSeparator, "").replaceAll(letterSeparator, "").chars().anyMatch(Character::isLetterOrDigit);
     }
 }
