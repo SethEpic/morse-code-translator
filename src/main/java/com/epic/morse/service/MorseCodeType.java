@@ -1,7 +1,7 @@
 package com.epic.morse.service;
 
 public enum MorseCodeType {
-    INTERNATIONAL(".", "-", null, null), AMERICAN(".", "-", "--", "---");
+    INTERNATIONAL(".", "-", null, null), AMERICAN(".", "-", "⸺", "⸻");
 
     private String dot;
     private String dash;

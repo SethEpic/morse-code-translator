@@ -1,15 +1,15 @@
 package com.epic.morse.config;
 
-import com.epic.morse.service.MorseCode;
+import com.epic.morse.service.MorseCodeSearcher;
 import com.epic.morse.service.MorseCodeType;
 import com.epic.morse.service.ValidationService;
 import com.epic.morse.service.ValidationServiceImpl;
 
 public final class MorseCodeConfig {
-    private static final ValidationService validationService = new ValidationServiceImpl();
-    private static volatile MorseCodeConfig configInstance = null;
     public static final String THIN_SPACE = "\u2009";
     public static final String HAIR_SPACE = "\u200A";
+    private static final ValidationService validationService = new ValidationServiceImpl();
+    private static volatile MorseCodeConfig configInstance = null;
     private final String internationalLetterSeparatorDefault_SingleSpace = " ";
     private final String internationalWordSeparatorDefault_DoubleSpace = "  ";
     private final String americanLetterSeparatorDefault_TripleSpace = "   ";
@@ -89,7 +89,7 @@ public final class MorseCodeConfig {
 
         this.morseCodeType = morseCodeType;
         configureDefaultSeparatorsForType(morseCodeType);
-        MorseCode.setLanguageCaches(morseCodeType);
+        MorseCodeSearcher.setLanguageCaches(morseCodeType);
     }
 
     private void configureDefaultSeparatorsForType(MorseCodeType type) {
