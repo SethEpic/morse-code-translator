@@ -9,7 +9,7 @@
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.0-snapshot</version>
   <url>https://github.com/SethEpic/morse-code-translator</url>
 
   <properties>

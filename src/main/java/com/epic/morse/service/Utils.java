@@ -4,21 +4,21 @@ import com.epic.morse.config.MorseCodeConfig;
 
 import java.util.List;
 
-final class Utils {
+public final class Utils {
     private static final List<String> escapeChars = List.of("<", "(", "[", "{", "\\", "^", "=", "$", "!", "|", "]", "}", ")", "?", "*", "+", ">");
     private static final String spaceRegexTemplate = "(?<=\\.|-|\\s*)%s(?=\\.|-|\\s*)";
     static final String multiSpaceRegex = "\\s+";
     static final String SPACE = " ";
 
-    static String createWordSeparatorRegex() {
+    public static String createWordSeparatorRegex() {
         return createSeparatorRegex(MorseCodeConfig.getInstance().getWordSeparator());
     }
 
-    static String createLetterSeparatorRegex() {
+    public static String createLetterSeparatorRegex() {
         return createSeparatorRegex(MorseCodeConfig.getInstance().getLetterSeparator());
     }
 
-    static String createSeparatorRegex(String separator) {
+    private static String createSeparatorRegex(String separator) {
         if (MorseCodeConfig.THIN_SPACE.equals(separator)) {
             return MorseCodeConfig.THIN_SPACE;
         } else if (MorseCodeConfig.HAIR_SPACE.equals(separator)) {
