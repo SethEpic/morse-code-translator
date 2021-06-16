@@ -1,7 +1,5 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
-
 import java.util.List;
 
 public final class Utils {

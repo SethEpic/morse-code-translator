@@ -1,7 +1,5 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
-
 import static com.epic.morse.service.Utils.SPACE;
 import static com.epic.morse.service.Utils.multiSpaceRegex;
 

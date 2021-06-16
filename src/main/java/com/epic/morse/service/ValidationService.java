@@ -8,6 +8,4 @@ public interface ValidationService {
     void validateWordSeparator(String var1);
 
     void validateLetterSeparator(String var1);
-
-    void validateMorseCodeType(MorseCodeType morseCodeType, boolean isUsingDefaultWordSeparator, boolean isUsingDefaultLetterSeparator);
 }

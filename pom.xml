@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>morse-code-translator</name>
-  <description>A morse code translator written in java.</description>
+  <description>A morse code translator written in java 15.</description>
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-snapshot</version>
+  <version>1.0.1</version>
   <url>https://github.com/SethEpic/morse-code-translator</url>
 
   <properties>
@@ -67,7 +67,7 @@
           <serverId>ossrh</serverId>
           <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
           <stagingProfileId>1c44d16c9dd1e7</stagingProfileId>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          <autoReleaseAfterClose>false</autoReleaseAfterClose>
         </configuration>
       </plugin>
       <plugin>

@@ -1,9 +1,4 @@
-package com.epic.morse.config;
-
-import com.epic.morse.service.MorseCodeSearcher;
-import com.epic.morse.service.MorseCodeType;
-import com.epic.morse.service.ValidationService;
-import com.epic.morse.service.ValidationServiceImpl;
+package com.epic.morse.service;
 
 public final class MorseCodeConfig {
     public static final String THIN_SPACE = "\u2009";

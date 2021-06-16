@@ -1,10 +1,9 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
 import com.epic.morse.exception.ExceptionMessages;
 import com.epic.morse.exception.MorseCodeException;
 
-public final class ValidationServiceImpl implements ValidationService {
+final class ValidationServiceImpl implements ValidationService {
 
     @Override
     public void validateTextToMorseCode(String text) {
@@ -78,19 +77,6 @@ public final class ValidationServiceImpl implements ValidationService {
         if (var1.contains(".")) {
             throw new MorseCodeException(ExceptionMessages.INVALID_LETTER_SEPARATOR_5);
         }
-    }
-
-    @Override
-    public void validateMorseCodeType(MorseCodeType type, boolean isUsingDefaultWordSeparator, boolean isUsingDefaultLetterSeparator) {
-        if (type.equals(MorseCodeType.INTERNATIONAL)) {
-            return;
-        }
-
-//        if (type.equals(MorseCodeType.AMERICAN)) {
-//            if (MorseCodeConfig.getInstance().isUsingDefaultWordSeparator()) {
-//             throw new MorseCodeException("Due to the spacing for the letter gaps in american morse code please set the word separator, if you use spaces please set 3 or more or any number of any other char");
-//            }
-//        }
     }
 
     private boolean isAnyAlphaNumeric(String var1) {

@@ -1,6 +1,5 @@
 package com.epic.morse.service;
 
-import com.epic.morse.config.MorseCodeConfig;
 import com.epic.morse.service.languages.AmericanMorseCode;
 import com.epic.morse.service.languages.InternationalMorseCode;
 import com.epic.morse.service.languages.MorseCodeLanguage;
@@ -8,7 +7,7 @@ import com.epic.morse.service.languages.MorseCodeLanguage;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class MorseCodeSearcher {
+final class MorseCodeSearcher {
     private static final Map<String, String> textCache = new HashMap<>();
     private static final Map<String, String> morseCodeCache = new HashMap<>();
     private static final MorseCodeLanguage[] internationalValues = InternationalMorseCode.values();
@@ -21,7 +20,7 @@ public final class MorseCodeSearcher {
         setLanguageCaches(MorseCodeConfig.getInstance().getMorseCodeType());
     }
 
-    public static void setLanguageCaches(MorseCodeType morseCodeType) {
+    static void setLanguageCaches(MorseCodeType morseCodeType) {
         textCache.clear();
         morseCodeCache.clear();
 
