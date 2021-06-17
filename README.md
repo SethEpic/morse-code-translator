@@ -2,8 +2,9 @@
 Morse code translator for java
 Written in java 15
 
-Latest Maven release Dependency:
+Docs: https://github.com/SethEpic/morse-code-translator/wiki
 
+Latest Maven release Dependency:
 ```
 <dependency>
     <groupId>io.github.SethEpic</groupId>
