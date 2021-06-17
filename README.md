@@ -4,6 +4,7 @@ Written in java 15
 
 Latest Maven release Dependency:
 
+```
 <dependency>
     <groupId>io.github.SethEpic</groupId>
     <artifactId>morse-code-translator</artifactId>
