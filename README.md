@@ -9,6 +9,6 @@ Latest Maven release Dependency:
 <dependency>
     <groupId>io.github.SethEpic</groupId>
     <artifactId>morse-code-translator</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
 </dependency>
 
