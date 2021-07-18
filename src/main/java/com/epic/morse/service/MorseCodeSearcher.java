@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class MorseCodeSearcher {
-    private static final Map<String, String> textCache = new HashMap<>();
+    private static final Map<Character, String> textCache = new HashMap<>();
     private static final Map<String, String> morseCodeCache = new HashMap<>();
     private static final MorseCodeLanguage[] internationalValues = InternationalMorseCode.values();
     private static final MorseCodeLanguage[] americanValues = AmericanMorseCode.values();
@@ -26,18 +26,18 @@ final class MorseCodeSearcher {
 
         if (MorseCodeType.INTERNATIONAL.equals(morseCodeType)) {
             for (MorseCodeLanguage international : internationalValues) {
-                textCache.put(international.getTextCharacter(), international.getMorseCodeCharacter());
+                textCache.put(international.getTextCharacter().charAt(0), international.getMorseCodeCharacter());
                 morseCodeCache.put(international.getMorseCodeCharacter(), international.getTextCharacter());
             }
         } else if (MorseCodeType.AMERICAN.equals(morseCodeType)) {
             for (MorseCodeLanguage american : americanValues) {
-                textCache.put(american.getTextCharacter(), american.getMorseCodeCharacter());
+                textCache.put(american.getTextCharacter().charAt(0), american.getMorseCodeCharacter());
                 morseCodeCache.put(american.getMorseCodeCharacter(), american.getTextCharacter());
             }
         }
     }
 
-    static String getMorseCodeCharacter(String character) {
+    static String getMorseCodeCharacter(char character) {
         return textCache.getOrDefault(character, "");
     }
 

@@ -16,4 +16,7 @@ public final class ExceptionMessages {
     public static final String INVALID_LETTER_SEPARATOR_3 = "Validation failed: letter separator cannot be equal to word separator";
     public static final String INVALID_LETTER_SEPARATOR_4 = "Validation failed: letter separator contain '-'";
     public static final String INVALID_LETTER_SEPARATOR_5 = "Validation failed: letter separator contain '.'";
+
+    private ExceptionMessages() {
+    }
 }

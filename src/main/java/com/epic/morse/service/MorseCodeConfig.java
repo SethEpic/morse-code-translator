@@ -1,13 +1,10 @@
 package com.epic.morse.service;
 
 public final class MorseCodeConfig {
-    public static final String THIN_SPACE = "\u2009";
-    public static final String HAIR_SPACE = "\u200A";
-    private static final ValidationService validationService = new ValidationServiceImpl();
-    private static volatile MorseCodeConfig configInstance = null;
+    private static final MorseCodeConfig configInstance = new MorseCodeConfig();
     private final String internationalLetterSeparatorDefault_SingleSpace = " ";
     private final String internationalWordSeparatorDefault_DoubleSpace = "  ";
-    private final String americanLetterSeparatorDefault_TripleSpace = "   ";
+    private final String americanLetterSeparatorDefault_TripleSpace = "/";
     private final String americanWordSeparatorDefault_Pipe = "|";
     private String letterSeparator = internationalLetterSeparatorDefault_SingleSpace;
     private String wordSeparator = internationalWordSeparatorDefault_DoubleSpace;
@@ -19,20 +16,14 @@ public final class MorseCodeConfig {
     }
 
     public static MorseCodeConfig getInstance() {
-        if (configInstance == null) {
-            synchronized (MorseCodeConfig.class) {
-                if (configInstance == null) {
-                    configInstance = new MorseCodeConfig();
-                }
-            }
-        }
         return configInstance;
     }
 
     public final void setWordSeparator(String wordSeparator) {
-        validationService.validateWordSeparator(wordSeparator);
-        usingDefaultWordSeparator = internationalLetterSeparatorDefault_SingleSpace.equals(letterSeparator);
+        ValidationService.validateWordSeparator(wordSeparator);
+        usingDefaultWordSeparator = internationalLetterSeparatorDefault_SingleSpace.equals(wordSeparator);
         this.wordSeparator = wordSeparator;
+        Utils.updateWordRegexCache(wordSeparator);
     }
 
     public final String getWordSeparator() {
@@ -40,9 +31,10 @@ public final class MorseCodeConfig {
     }
 
     public final void setLetterSeparator(String letterSeparator) {
-        validationService.validateLetterSeparator(letterSeparator);
+        ValidationService.validateLetterSeparator(letterSeparator);
         usingDefaultLetterSeparator = internationalWordSeparatorDefault_DoubleSpace.equals(letterSeparator);
         this.letterSeparator = letterSeparator;
+        Utils.updateLetterRegexCache(letterSeparator);
     }
 
     public final String getLetterSeparator() {
