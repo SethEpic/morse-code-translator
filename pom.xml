@@ -9,7 +9,7 @@
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.3</version>
+  <version>1.0.5</version>
   <url>https://github.com/SethEpic/morse-code-translator</url>
 
   <properties>
@@ -30,28 +30,12 @@
   </distributionManagement>
 
   <dependencies>
-    <!--    <dependency>-->
-<!--      <groupId>com.googlecode.soundlibs</groupId>-->
-<!--      <artifactId>tritonus-share</artifactId>-->
-<!--      <version>0.3.7-2</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>com.googlecode.soundlibs</groupId>-->
-<!--      <artifactId>mp3spi</artifactId>-->
-<!--      <version>1.9.5-1</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>com.googlecode.soundlibs</groupId>-->
-<!--      <artifactId>vorbisspi</artifactId>-->
-<!--      <version>1.0.3-1</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>5.8.0-M1</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -103,6 +87,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
