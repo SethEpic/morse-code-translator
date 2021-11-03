@@ -4,22 +4,49 @@ import com.epic.morse.exception.MorseCodeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
+import static com.epic.morse.exception.ExceptionMessages.VALIDATION_ERROR_1;
 import static com.epic.morse.exception.ExceptionMessages.VALIDATION_ERROR_3;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MorseCodeTest {
     private static final String test = "Hello World, my name is Seth. I created this morse code translator!";
+    private static final String[] testArray = new String[]{"Hello World", "Name is Seth.", "I am very epic", "And you are not", "Ha", "Do", "not", "be", "Upset"};
+//    private static final String[] expectedEncodedArray = new String[]{
+//        ".... . .-.. .-.. ---  .-- --- .-. .-.. -.., -. .- -- .  .. ...  ... . - .... .-.-.-",
+//        "..  .- --  ...- . .-. -.--  . .--. .. -.-.", ".- -. -..  -.-- --- ..-  .- .-. .  -. --- -",
+//        ".... .-", "-.. ---", "-. --- -", "-... .", "..- .--. ... . -",
+//    };
+
+    private static final String[] expectedEncodedArray = {".... . .-.. .-.. ---  .-- --- .-. .-.. -..",
+        "-. .- -- .  .. ...  ... . - .... .-.-.-", "..  .- --  ...- . .-. -.--  . .--. .. -.-.",
+        ".- -. -..  -.-- --- ..-  .- .-. .  -. --- -", ".... .-", "-.. ---", "-. --- -", "-... .", "..- .--. ... . -"
+    };
+
     private static final String testMorseCode = ".... . .-.. .-.. ---  .-- --- .-. .-.. -.. --..--  -- -.--  -. .- --" +
         " .  .. ...  ... . - .... .-.-.-  ..  -.-. .-. . .- - . -..  - .... .. ...  -- --- .-. ... .  -.-. --- -.. ." +
         "  - .-. .- -. ... .-.. .- - --- .-. -.-.--";
-    private static final String testAmericanMorseCode = ". . . ././⸺/⸺/.  .|. - -/.  ./.  . ./⸺/- . ./. - . -|-" +
-        " -/. .  . .|- ./. -/- -/.|. ./. . .|. . ././-/. . . ./. . - - . .|. .|. .  ./.  . ././. -/-/./- . .|-/. . ." +
-        " ./. ./. . .|- -/.  ./.  . ./. . ./.|. .  ./.  ./- . ./.|-/.  . ./. -/- ./. . ./⸺/. -/-/.  ./.  . ./- - - .";
-
 
     @BeforeEach
     public void init() {
         MorseCodeConfig.getInstance().reset();
+    }
+
+    @Test
+    public void testy() {
+        var character = "[";
+        final var expectedTest = test.toUpperCase();
+        MorseCodeConfig.getInstance().setLetterSeparator(character);
+
+        var customLetterSepMorseCode = MorseCode.encode(test);
+        assertEquals(expectedTest, MorseCode.decode(customLetterSepMorseCode));
+
+        MorseCodeConfig.getInstance().reset();
+        MorseCodeConfig.getInstance().setWordSeparator(character);
+
+        var customWordSepMorseCode = MorseCode.encode(test);
+        assertEquals(expectedTest, MorseCode.decode(customWordSepMorseCode));
     }
 
     @Test
@@ -72,7 +99,7 @@ public class MorseCodeTest {
     }
 
     @Test
-    public void convert_testStr_defaults() {
+    public void convert_TestStr_defaults() {
         execute(test, testMorseCode);
     }
 
@@ -101,93 +128,75 @@ public class MorseCodeTest {
         final String expectedMorseCode = "....=.=.-..=.-..=---/.--=---=.-.=.-..=-..=--..--/--=-.--/-.=.-=--=./..=.../" +
             "...=.=-=....=.-.-.-/../-.-.=.-.=.=.-=-=.=-../-=....=..=.../--=---=.-.=...=./-.-.=---=-..=./-=.-.=.-=-.=" +
             "...=.-..=.-=-=---=.-.=-.-.--";
-        // Adding a space at the end to test the convert method to remove spaces from start and end
-        execute(test, expectedMorseCode, " ");
+        execute(test, expectedMorseCode);
     }
 
     @Test
     public void convert_LetterSep2Chars() {
         MorseCodeConfig.getInstance().setLetterSeparator("=_");
-        final String expectedMorseCode = "....=_.=_.-..=_.-..=_---_  .--=_---=_.-.=_.-..=_-..=_--..--_  --=_-.--_  " +
-            "-.=_.-=_--=_._  ..=_..._  ...=_.=_-=_....=_.-.-.-_  .._  -.-.=_.-.=_.=_.-=_-=_.=_-.._  -=_....=_..=_..._" +
-            "  --=_---=_.-.=_...=_._  -.-.=_---=_-..=_._  -=_.-.=_.-=_-.=_...=_.-..=_.-=_-=_---=_.-.=_-.-.--_";
-        execute(test, expectedMorseCode);
-    }
-
-    @Test
-    public void convert_American_Default() {
-        MorseCodeConfig.getInstance().setMorseCodeType(MorseCodeType.AMERICAN);
-        execute(test, testAmericanMorseCode);
-    }
-
-    @Test
-    public void convert_American_CustomLetterSep() {
-        MorseCodeConfig.getInstance().setLetterSeparator("=");
-        MorseCodeConfig.getInstance().setMorseCodeType(MorseCodeType.AMERICAN);
-        final String expectedMorseCode = ". . . .=.=⸺=⸺=.  .|. - -=.  .=.  . .=⸺=- . .=. - . -|- -=. .  . .|- .=." +
-            " -=- -=.|. .=. . .|. . .=.=-=. . . .=. . - - . .|. .|. .  .=.  . .=.=. -=-=.=- . .|-=. . . .=. .=. . .|- -=." +
-            "  .=.  . .=. . .=.|. .  .=.  .=- . .=.|-=.  . .=. -=- .=. . .=⸺=. -=-=.  .=.  . .=- - - .";
+        final String expectedMorseCode = "....=_.=_.-..=_.-..=_---  .--=_---=_.-.=_.-..=_-..=_--..--  --=_-.--  -.=_.-=_--=_.  ..=_...  ...=_.=_-=_....=_.-.-.-  ..  -.-.=_.-.=_.=_.-=_-=_.=_-..  -=_....=_..=_...  --=_---=_.-.=_...=_.  -.-.=_---=_-..=_.  -=_.-.=_.-=_-.=_...=_.-..=_.-=_-=_---=_.-.=_-.-.--";
         execute(test, expectedMorseCode);
     }
 
     @Test
     public void convert_AlphaLetterSep_ShouldFail_AlphaCharsThatAreNotEqToLetterSep() {
         MorseCodeConfig.getInstance().setLetterSeparator("G");
-        final String expectedMorseCode = "....G.G.-..G.-..G---  .--G---G.-.G.-..G-..G--..--  --G-.--  -.G.-G--G." +
-            "  ..G...  ...G.G-G....G.-.-.-  ..  -.-.G.-.G.G.-G-G.G-..  -G....G..G...  --G---G.-.G...G.  -.-.G---G-..G." +
-            "  -G.-.G.-G-.G...G.-..G.-G-G---G.-.G-.-.--";
         final MorseCodeException expectedException = new MorseCodeException(VALIDATION_ERROR_3);
-        executeThrows(expectedException, false, true, test, expectedMorseCode, "adsf");
+        MorseCodeException thrown = assertThrows(MorseCodeException.class, () -> MorseCode.decode(test.concat("adsf")));
+        assertEquals(expectedException.getErrorMessage(), thrown.getErrorMessage());
+    }
+
+    @Test
+    public void encodeNullStr_ShouldThrowValidationError() {
+        final MorseCodeException expectedException = new MorseCodeException(VALIDATION_ERROR_1);
+        MorseCodeException thrown = assertThrows(MorseCodeException.class, () -> MorseCode.encode((String) null));
+        assertEquals(expectedException.getErrorMessage(), thrown.getErrorMessage());
+    }
+
+    @Test
+    public void encodeCharArray_Defaults() {
+        final char[] characters = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'};
+        final String[] expected = {"....", ".", ".-..", ".-..", "---", "", ".--", "---", ".-.", ".-..", "-.."};
+        final String[] morseCode = MorseCode.encode(characters);
+        final String[] decoded = MorseCode.decode(expected);
+
+        assertArrayEquals(expected, morseCode);
+        assertDecodeArrayEquals(decoded, characters);
+    }
+
+    @Test
+    public void encodeStringArray_Defaults() {
+        final String[] morseCode = MorseCode.encode(testArray);
+        final String[] decoded = MorseCode.decode(morseCode);
+        System.out.println(Arrays.toString(morseCode));
+        assertArrayEquals(expectedEncodedArray, morseCode);
+        assertDecodeArrayEquals(decoded);
     }
 
     private void execute(String testValue, String expectedMorseCode) {
-        var morseCode = MorseCode.convertToMorseCode(testValue);
+        var morseCode = MorseCode.encode(testValue);
         assertNotNull(morseCode, "convertToMorseCode Should NEVER return null");
         assertEquals(expectedMorseCode, morseCode);
 
-        var text = MorseCode.convertToText(morseCode);
+        var text = MorseCode.decode(morseCode);
         assertNotNull(text, "convertToText Should NEVER return null");
         assertFalse(text.chars().anyMatch(Character::isLowerCase), "convertToText Should return a str of all upper case chars");
         assertEquals(testValue.toUpperCase(), text);
     }
 
-    private void execute(String testValue, String expectedMorseCode, String addToMorseCode) {
-        var morseCode = MorseCode.convertToMorseCode(testValue);
-        assertNotNull(morseCode, "convertToMorseCode Should NEVER return null");
-        assertEquals(expectedMorseCode, morseCode);
-
-        var text = MorseCode.convertToText(addToMorseCode == null ? morseCode : morseCode.concat(addToMorseCode));
-        assertNotNull(text, "convertToText Should NEVER return null");
-        assertFalse(text.chars().anyMatch(Character::isLowerCase), "convertToText Should return a str of all upper case chars");
-        assertEquals(testValue.toUpperCase(), text);
+    private void assertDecodeArrayEquals(String[] actual, char[] expected) {
+        for (int i = 0; i < actual.length; i++) {
+            if (Character.toUpperCase(expected[i]) != actual[i].charAt(0)) {
+                fail("Decode array is not equal!\nchar: " + expected[i] + "\nString: " + actual[i]);
+            }
+        }
     }
 
-    private void executeThrows(MorseCodeException expectedException, boolean toMorse, boolean toText,
-                               String testValue, String expectedMorseCode, String addToMorseCode) {
-
-        if (((!toMorse && !toText) || (toMorse && toText))) {
-            fail();
-        }
-        String morseCode = "";
-
-        if (toMorse) {
-            MorseCodeException thrown = assertThrows(MorseCodeException.class, () -> MorseCode.convertToMorseCode(testValue));
-            assertEquals(expectedException.getErrorMessage(), thrown.getErrorMessage());
-        } else {
-            morseCode = MorseCode.convertToMorseCode(testValue);
-            assertNotNull(morseCode, "convertToMorseCode Should NEVER return null");
-            assertEquals(expectedMorseCode, morseCode);
-        }
-
-        if (toText) {
-            String finalMorseCode = addToMorseCode == null ? morseCode : morseCode.concat(addToMorseCode);
-            MorseCodeException thrown = assertThrows(MorseCodeException.class, () -> MorseCode.convertToText(finalMorseCode));
-            assertEquals(expectedException.getErrorMessage(), thrown.getErrorMessage());
-        } else {
-            final String text = MorseCode.convertToText(morseCode);
-            assertNotNull(morseCode, "convertToText Should NEVER return null");
-            assertFalse(text.chars().anyMatch(Character::isLowerCase), "convertToText Should return a str of all upper case chars");
-            assertEquals(testValue.toUpperCase(), text);
+    private void assertDecodeArrayEquals(String[] actual) {
+        for (int i = 0; i < actual.length; i++) {
+            if (!testArray[i].equalsIgnoreCase(actual[i])) {
+                fail("Decode array is not equal!\nstring: " + testArray[i] + "\nString: " + actual[i]);
+            }
         }
     }
 }

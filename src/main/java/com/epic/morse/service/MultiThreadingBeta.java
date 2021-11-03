@@ -1,94 +1,111 @@
 //package com.epic.morse.service;
 //
-//import java.util.*;
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Map;
 //import java.util.concurrent.ConcurrentHashMap;
 //import java.util.concurrent.ExecutorService;
 //import java.util.concurrent.Executors;
 //import java.util.concurrent.TimeUnit;
 //import java.util.regex.Pattern;
+//import java.util.stream.Collectors;
 //
 //public final class MultiThreadingBeta {
 //    private static final StringBuilder SPACE = new StringBuilder(" ");
-//    static final String testStr = "Hello there, My name is seth and i love air. It's pretty nice to breath it but don't try to drink the air it don't works!";
+////    static final String testStr = "Hello there, My name is seth and i love air. It's pretty nice to breath it but don't try to drink the air it don't works!";
 //
 //    private static volatile Map<Integer, String> morseMap = new ConcurrentHashMap<>();
 //
-//    public static void main(String[] args) throws InterruptedException {
-////        var testStr = "Hello World".repeat(1500000);
-//        var systemStart = System.currentTimeMillis();
-//
-//        var result = convertToText(convertToMorseCode(testStr));
-//
-//        var systemEnd = System.currentTimeMillis();
-//        System.out.println(result);
-//        System.out.println(systemEnd - systemStart + "ms");
-//        System.err.println(result.equalsIgnoreCase(testStr));
+//    public static void main(String[] args) {
+//        var testStr = "Hello World".repeat(1500);
+//        for (int i = 0; i < 5; i++) {
+//            var systemStart = System.currentTimeMillis();
+//            for (int j = 0; j < 1000; j++) {
+//                convertToText(convertToMorseCode(testStr));
+//            }
+//            var systemEnd = System.currentTimeMillis();
+//            System.out.println(systemEnd - systemStart + "ms");
+//        }
 //    }
+//
+//    static Pattern pattern = Pattern.compile(" ");
+//    static Pattern pattern2 = Pattern.compile(MorseCodeConfig.getInstance().getWordSeparator());
 //
 //    private MultiThreadingBeta() {
 //    }
 //
-//    public static String convertToMorseCode(String text) throws InterruptedException {
-//        return convertToMorseCode(split(text, 12));
+//    public static String convertToMorseCode(String text) {
+//        var s = pattern.split(text);
+//        var sep = MorseCodeConfig.getInstance().getWordSeparator();
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < s.length; i++) {
+//            sb.append(MorseCode.encode(s[i])).append(sep);
+//        }
+//        sb.setLength(sb.length() - sep.length());
+//        return sb.toString();
+////        return pattern.splitAsStream(text).parallel().map(MorseCode::encode).collect(Collectors.joining(MorseCodeConfig.getInstance().getWordSeparator()));
+////        return pattern.splitAsStream(text).map(MorseCode::encode).collect(Collectors.joining(MorseCodeConfig.getInstance().getWordSeparator()));
+////        return convertToMorseCode(split(text, " "));
 //    }
 //
-//    public static String convertToText(String morseCode) throws InterruptedException {
-//        return convertToText(split(morseCode, 12));
+//    public static String convertToText(String morseCode) {
+//        return pattern2.splitAsStream(morseCode).parallel().map(MorseCode::decode).collect(Collectors.joining(" "));
+////        return pattern2.splitAsStream(morseCode).map(MorseCode::decode).collect(Collectors.joining(" "));
+////        return convertToText(splitMorseCode(morseCode));
 //    }
 //
-//    private static List<String[]> parseStringIntoList(String text, String separator) {
-//        int threadCount = Runtime.getRuntime().availableProcessors();
-//        String[] words = text.split(separator);
-////        if (words.length >= threadCount) {
-////            List<String[]> strs = new ArrayList<>();
-////            for (int i = 0; i < words.length; i++) {
-////                strs.add(Arrays.copyOfRange(words, i, (i + 1));
-////            }
-////        }
-//        int half = words.length / 2;
-//        return new ArrayList<>() {{
-//            add(Arrays.copyOfRange(words, 0, half));
-//            add(Arrays.copyOfRange(words, half, words.length));
-//        }};
+//    public static String[] split(String str, String delimiter) {
+//        String[] splitMessage = str.split(delimiter);
+//        System.out.println("SPLIT: " + splitMessage.length);
+////        long chunk = 2; // chunk size to divide
+//        var threads = Runtime.getRuntime().availableProcessors();
+//        var chunk = roundUp(Long.parseLong(String.valueOf(splitMessage.length)), threads);
+//        System.out.println(chunk);
+////        String[] result = new String[splitMessage.length];
+//        int index = 0;
+//        List<String> list = new ArrayList<>();
+//        for (int i = 0; i < splitMessage.length; i += chunk) {
+//            list.add(Arrays.toString(Arrays.copyOfRange(splitMessage, i, Math.min(splitMessage.length, i + (int) chunk))));
+////            result[index] = Arrays.toString(Arrays.copyOfRange(splitMessage, i, Math.min(splitMessage.length, i + (int) chunk)));
+//            index++;
+//        }
+//        String[] r = new String[index];
+//        for (int i = 0; i < index; i++) {
+//            r[i] = list.get(i);
+//        }
+//        System.out.println(index);
+//        return r;
 //    }
 //
-//    public static String[] split(String str, int len) {
-//        String[] result = new String[(int) Math.ceil((double) str.length() / (double) len)];
+//    public static String[] splitMorseCode(String str) {
+//        final String[] words = RegexUtils.getWordSeparatorRegex().split(str.trim());
+//        var threads = Runtime.getRuntime().availableProcessors();
+//        System.out.println(threads);
+//        var part_size = roundUp(Long.parseLong(String.valueOf(words.length)), threads);
+//
+//
+//        String[] result = new String[(int) Math.ceil((double) str.length() / (double) part_size)];
 //        for (int i = 0; i < result.length; i++)
-//            result[i] = str.substring(i * len, Math.min(str.length(), (i + 1) * len));
+//            result[i] = str.substring(i * (int) part_size, Math.min(str.length(), (i + 1) * (int) part_size));
 //        return result;
 //    }
 //
-//    private static String convert(String[] strings, String wordSeparator) {
-//        final Map<Integer, String> morseMapLo = new HashMap<>();
-//        final Thread p1;// = new Thread(() -> morseMap.put(1, covertTextToMorseCode(strings.get(0), MorseCodeConfig.getInstance().getWordSeparator(), MorseCodeConfig.getInstance().getLetterSeparator())));
-//        final Thread p2;// = new Thread(() -> morseMap.put(2, covertTextToMorseCode(strings.get(1), MorseCodeConfig.getInstance().getWordSeparator(), MorseCodeConfig.getInstance().getLetterSeparator())));
-//
-//        p1 = new Thread(() -> morseMapLo.put(1, convertMorseCodeToText2(strings[0], Utils.getWordSeparatorRegex(), Utils.getLetterSeparatorRegex())));
-//        p2 = new Thread(() -> morseMapLo.put(2, convertMorseCodeToText2(strings[1], Utils.getWordSeparatorRegex(), Utils.getLetterSeparatorRegex())));
-//
-//        p1.start();
-//        p2.start();
-//
-//        for (Thread thread : new Thread[]{p1, p2}) {
-//            try {
-//                thread.join();
-//            } catch (Exception ignored) {
-//            }
-//        }
-//
-//        return morseMapLo.get(1).concat(wordSeparator).concat(morseMapLo.get(2));
+//    private static long roundUp(long num, long divisor) {
+//        return (num + divisor - 1) / divisor;
 //    }
 //
 //    private static String convertToMorseCode(String[] strings) throws InterruptedException {
-//        int threadCount = Runtime.getRuntime().availableProcessors() - 1;
+//        int threadCount = Runtime.getRuntime().availableProcessors();
 //        final String wordSep = MorseCodeConfig.getInstance().getWordSeparator();
 //        final String letterSep = MorseCodeConfig.getInstance().getLetterSeparator();
 //        ExecutorService es = Executors.newFixedThreadPool(threadCount);
 //
-//        for (int i = 0; i < threadCount; i++) {
+//        for (int i = 0; i < strings.length; i++) {
 //            int j = i;
-//            es.execute(() -> morseMap.put(j, covertTextToMorseCode2(strings[j], wordSep, letterSep)));
+//            String s = strings[i];
+//            System.out.println(s);
+//            es.execute(() -> morseMap.put(j, covertTextToMorseCode2(s, wordSep, letterSep)));
 //        }
 //
 //        es.shutdown();
@@ -106,12 +123,12 @@
 //    }
 //
 //    private static String convertToText(String[] strings) throws InterruptedException {
-//        int threadCount = Runtime.getRuntime().availableProcessors() - 1;
-//        final Pattern wordSep = Utils.getWordSeparatorRegex();
-//        final Pattern letterSep = Utils.getWordSeparatorRegex();
+//        int threadCount = Runtime.getRuntime().availableProcessors();
+//        final Pattern wordSep = RegexUtils.getWordSeparatorRegex();
+//        final Pattern letterSep = RegexUtils.getLetterSeparatorRegex();
 //        ExecutorService es = Executors.newFixedThreadPool(threadCount);
 //
-//        for (int i = 0; i < threadCount; i++) {
+//        for (int i = 0; i < strings.length; i++) {
 //            int j = i;
 //            es.execute(() -> morseMap.put(j, convertMorseCodeToText2(strings[j], wordSep, letterSep)));
 //        }
@@ -125,43 +142,16 @@
 //
 //        StringBuilder builder = new StringBuilder();
 //        for (int i = 0; i < threadCount; i++) {
-//            builder.append(morseMap.getOrDefault(i, "")).append(" ");
+//            builder.append(morseMap.get(i)).append(" ");
 //        }
-//        return builder.deleteCharAt(builder.length() - " ".length()).toString();
-//    }
-//
-//    private static String covertTextToMorseCode(String words, String wordSeparator, String letterSeparator) {
-//        final StringBuilder morseCodeBuilder = new StringBuilder();
-//        final int letterSeparatorLength = letterSeparator.length();
-//
-//        for (String word : words.split(" ")) {
-//            char[] characters = word.toUpperCase().trim().toCharArray();
-//            for (char character : characters) {
-//                morseCodeBuilder.append(MorseCodeSearcher.getMorseCodeCharacter(character)).append(letterSeparator);
-//            }
-//            morseCodeBuilder.deleteCharAt(morseCodeBuilder.length() - letterSeparatorLength).append(wordSeparator);
-//        }
-//
-//        return morseCodeBuilder.deleteCharAt(morseCodeBuilder.length() - letterSeparatorLength).toString();
-//    }
-//
-//    private static String convertMorseCodeToText(String[] morseCodeWords, Pattern letterSepRegex) {
-//        final StringBuilder convertedToText = new StringBuilder();
-//
-//        for (String word : morseCodeWords) {
-//            String[] letters = letterSepRegex.split(word);
-//            for (String letter : letters) {
-//                convertedToText.append(MorseCodeSearcher.getTextCharacter(letter));
-//            }
-//            convertedToText.append(SPACE);
-//        }
-//
-//        return convertedToText.toString().trim();
+//        return builder.toString().trim();
 //    }
 //
 //    private static String covertTextToMorseCode2(String message, String wordSeparator, String letterSeparator) {
+////        message = message.replaceFirst("\\[", "").replaceFirst("]", "")
+////                .replaceAll("(,{1})", "").replaceAll(",,", ",");
 //        final StringBuilder morseCodeBuilder = new StringBuilder();
-//        final char[] characters = Utils.multiSpaceRegex.matcher(message.toUpperCase().trim()).replaceAll(" ").toCharArray();
+//        final char[] characters = message.toUpperCase().trim().toCharArray();
 //        final int letterSeparatorLength = letterSeparator.length();
 //
 //        for (char character : characters) {
@@ -169,21 +159,18 @@
 //                morseCodeBuilder.deleteCharAt(morseCodeBuilder.length() - letterSeparatorLength).append(wordSeparator);
 //                continue;
 //            }
-//
-//            morseCodeBuilder.append(MorseCodeSearcher.getMorseCodeCharacter(character)).append(letterSeparator);
+//            morseCodeBuilder.append(MorseCodeSearcher.charToMorse(character)).append(letterSeparator);
 //        }
-//
-//        return morseCodeBuilder.deleteCharAt(morseCodeBuilder.length() - letterSeparatorLength).toString();
+//        return morseCodeBuilder.toString().trim();
 //    }
 //
 //    private static String convertMorseCodeToText2(String morseCode, Pattern wordSepRegex, Pattern letterSepRegex) {
 //        final StringBuilder convertedToText = new StringBuilder();
-//        final String[] words = wordSepRegex.split(morseCode.trim());
+////        final String[] words = wordSepRegex.split(morseCode.trim());
 //
-//        for (String word : words) {
-//            String[] letters = letterSepRegex.split(word);
-//            for (String letter : letters) {
-//                convertedToText.append(MorseCodeSearcher.getTextCharacter(letter));
+//        for (String word : wordSepRegex.split(morseCode.trim())) {
+//            for (String letter : letterSepRegex.split(word)) {
+//                convertedToText.append(MorseCodeSearcher.morseToChar(letter));
 //            }
 //            convertedToText.append(SPACE);
 //        }

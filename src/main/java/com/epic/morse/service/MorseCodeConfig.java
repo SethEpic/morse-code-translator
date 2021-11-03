@@ -2,16 +2,16 @@ package com.epic.morse.service;
 
 public final class MorseCodeConfig {
 
-    private static final class Defaults {
-        private static final String internationalLetterSeparator_SingleSpace = " ";
-        private static final String internationalWordSeparator_DoubleSpace = "  ";
-        private static final String americanLetterSeparator_TripleSpace = "/";
-        private static final String americanWordSeparator_Pipe = "|";
+    private static final class MorseCodeConfigDefaults {
+        private static final String internationalLetterSeparator = " ";
+        private static final String internationalWordSeparator = "  ";
+        private static final String americanLetterSeparator = "/";
+        private static final String americanWordSeparator = "|";
     }
 
     private static final MorseCodeConfig configInstance = new MorseCodeConfig();
-    private String letterSeparator = Defaults.internationalLetterSeparator_SingleSpace;
-    private String wordSeparator = Defaults.internationalWordSeparator_DoubleSpace;
+    private String letterSeparator = MorseCodeConfigDefaults.internationalLetterSeparator;
+    private String wordSeparator = MorseCodeConfigDefaults.internationalWordSeparator;
     private boolean usingDefaultLetterSeparator = true;
     private boolean usingDefaultWordSeparator = true;
     private MorseCodeType morseCodeType = MorseCodeType.INTERNATIONAL;
@@ -23,26 +23,42 @@ public final class MorseCodeConfig {
         return configInstance;
     }
 
-    public final void setWordSeparator(String wordSeparator) {
+    public void setWordSeparator(String wordSeparator) {
+        if (this.wordSeparator.equals(wordSeparator)) return;
+
         ValidationService.validateWordSeparator(wordSeparator);
-        usingDefaultWordSeparator = Defaults.internationalLetterSeparator_SingleSpace.equals(wordSeparator);
+
+        if (morseCodeType.isInternational()) {
+            usingDefaultWordSeparator = MorseCodeConfigDefaults.internationalWordSeparator.equals(wordSeparator);
+        } else {
+            usingDefaultWordSeparator = MorseCodeConfigDefaults.americanWordSeparator.equals(wordSeparator);
+        }
+
         this.wordSeparator = wordSeparator;
-        Utils.updateWordRegexCache(wordSeparator);
+        RegexUtils.updateWordRegexCache(wordSeparator, morseCodeType);
     }
 
-    public final String getWordSeparator() {
-        return this.wordSeparator;
+    public String getWordSeparator() {
+        return wordSeparator;
     }
 
-    public final void setLetterSeparator(String letterSeparator) {
+    public void setLetterSeparator(String letterSeparator) {
+        if (this.letterSeparator.equals(letterSeparator)) return;
+
         ValidationService.validateLetterSeparator(letterSeparator);
-        usingDefaultLetterSeparator = Defaults.internationalWordSeparator_DoubleSpace.equals(letterSeparator);
+
+        if (morseCodeType.isInternational()) {
+            usingDefaultLetterSeparator = MorseCodeConfigDefaults.internationalLetterSeparator.equals(letterSeparator);
+        } else {
+            usingDefaultLetterSeparator = MorseCodeConfigDefaults.americanLetterSeparator.equals(letterSeparator);
+        }
+
         this.letterSeparator = letterSeparator;
-        Utils.updateLetterRegexCache(letterSeparator);
+        RegexUtils.updateLetterRegexCache(letterSeparator, morseCodeType);
     }
 
-    public final String getLetterSeparator() {
-        return this.letterSeparator;
+    public String getLetterSeparator() {
+        return letterSeparator;
     }
 
     public boolean isUsingDefaultWordSeparator() {
@@ -54,71 +70,64 @@ public final class MorseCodeConfig {
     }
 
     public String getInternationalDefaultLetterSeparator() {
-        return Defaults.internationalLetterSeparator_SingleSpace;
+        return MorseCodeConfigDefaults.internationalLetterSeparator;
     }
 
     public String getInternationalDefaultWordSeparator() {
-        return Defaults.internationalWordSeparator_DoubleSpace;
+        return MorseCodeConfigDefaults.internationalWordSeparator;
     }
 
     public String getAmericanDefaultLetterSeparator() {
-        return Defaults.americanLetterSeparator_TripleSpace;
+        return MorseCodeConfigDefaults.americanLetterSeparator;
     }
 
     public String getAmericanDefaultWordSeparator() {
-        return Defaults.americanWordSeparator_Pipe;
+        return MorseCodeConfigDefaults.americanWordSeparator;
     }
 
-    public final MorseCodeType getMorseCodeType() {
-        return this.morseCodeType;
+    public MorseCodeType getMorseCodeType() {
+        return morseCodeType;
     }
 
-    public final void setMorseCodeType(MorseCodeType morseCodeType) {
-        if (this.morseCodeType.equals(morseCodeType) || morseCodeType == null) {
-            return;
-        }
+    /**
+     * Call this method before setting word or letter separators
+     * When you set the morse code type it will reset the word and letter separators
+     */
+    public void setMorseCodeType(MorseCodeType morseCodeType) {
+        if (this.morseCodeType.equals(morseCodeType)) return;
 
         this.morseCodeType = morseCodeType;
-        configureDefaultSeparatorsForType(morseCodeType);
+        resetWordSeparator();
+        resetLetterSeparator();
         MorseCodeSearcher.setLanguageCaches(morseCodeType);
-    }
-
-    private void configureDefaultSeparatorsForType(MorseCodeType type) {
-        if (MorseCodeType.AMERICAN.equals(type)) {
-            if (usingDefaultWordSeparator || (wordSeparator.isBlank() && wordSeparator.length() < 3)) {
-                setWordSeparator(Defaults.americanWordSeparator_Pipe);
-                usingDefaultWordSeparator = true;
-            }
-
-            if (usingDefaultLetterSeparator || (letterSeparator.isBlank() && letterSeparator.length() < 3)) {
-                setLetterSeparator(Defaults.americanLetterSeparator_TripleSpace);
-                usingDefaultLetterSeparator = true;
-            }
-        } else if (MorseCodeType.INTERNATIONAL.equals(type)) {
-            if (usingDefaultWordSeparator && Defaults.americanWordSeparator_Pipe.equals(wordSeparator)) {
-                setWordSeparator(Defaults.internationalWordSeparator_DoubleSpace);
-                usingDefaultWordSeparator = true;
-            }
-
-            if (usingDefaultLetterSeparator && Defaults.americanLetterSeparator_TripleSpace.equals(letterSeparator)) {
-                setLetterSeparator(Defaults.internationalLetterSeparator_SingleSpace);
-                usingDefaultLetterSeparator = true;
-            }
-        }
+        RegexUtils.resetInvalidMorseCodeRegex(morseCodeType);
     }
 
     public void reset() {
-        this.wordSeparator = Defaults.internationalWordSeparator_DoubleSpace;
-        ValidationService.validateWordSeparator(this.wordSeparator);
-        Utils.updateWordRegexCache(this.wordSeparator);
-        this.usingDefaultWordSeparator = true;
+        resetMorseCodeType();
+        resetWordSeparator();
+        resetLetterSeparator();
+    }
 
-        this.letterSeparator = Defaults.internationalLetterSeparator_SingleSpace;
-        ValidationService.validateLetterSeparator(this.letterSeparator);
-        Utils.updateLetterRegexCache(this.letterSeparator);
-        this.usingDefaultLetterSeparator = true;
+    public void resetWordSeparator() {
+        usingDefaultWordSeparator = true;
+        wordSeparator = morseCodeType.isInternational() ?
+            MorseCodeConfigDefaults.internationalWordSeparator : MorseCodeConfigDefaults.americanWordSeparator;
+        ValidationService.updateWordSeparator(wordSeparator);
+        RegexUtils.updateWordRegexCache(wordSeparator, morseCodeType);
+    }
 
-        this.morseCodeType = MorseCodeType.INTERNATIONAL;
-        MorseCodeSearcher.setLanguageCaches(this.morseCodeType);
+    public void resetLetterSeparator() {
+        usingDefaultLetterSeparator = true;
+        letterSeparator = morseCodeType.isInternational() ?
+            MorseCodeConfigDefaults.internationalLetterSeparator : MorseCodeConfigDefaults.americanLetterSeparator;
+        ValidationService.updateLetterSeparator(letterSeparator);
+        RegexUtils.updateLetterRegexCache(letterSeparator, morseCodeType);
+    }
+
+    public void resetMorseCodeType() {
+        morseCodeType = MorseCodeType.INTERNATIONAL;
+        MorseCodeSearcher.setLanguageCaches(morseCodeType);
+        RegexUtils.resetInvalidMorseCodeRegex(morseCodeType);
     }
 }

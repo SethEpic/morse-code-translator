@@ -1,17 +1,19 @@
 package com.epic.morse.service;
 
-import com.epic.morse.service.languages.AmericanMorseCode;
-import com.epic.morse.service.languages.InternationalMorseCode;
 import com.epic.morse.service.languages.MorseCodeLanguage;
+import com.epic.morse.service.languages.MorseCodeLetter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 final class MorseCodeSearcher {
-    private static final Map<Character, String> textCache = new HashMap<>();
-    private static final Map<String, String> morseCodeCache = new HashMap<>();
-    private static final MorseCodeLanguage[] internationalValues = InternationalMorseCode.values();
-    private static final MorseCodeLanguage[] americanValues = AmericanMorseCode.values();
+    private static final HashMap<Character, String> textCache = new HashMap<>();
+    private static final HashMap<String, String> morseCodeCache = new HashMap<>();
+    private static final MorseCodeLetter[] internationalValues = MorseCodeLanguage.International.values();
+    private static final MorseCodeLetter[] americanValues = MorseCodeLanguage.American.values();
+    private static MorseCodeLetter[] morseCodeLetters = null;
+//    TODO use emun map???
 
     private MorseCodeSearcher() {
     }
@@ -24,24 +26,45 @@ final class MorseCodeSearcher {
         textCache.clear();
         morseCodeCache.clear();
 
-        if (MorseCodeType.INTERNATIONAL.equals(morseCodeType)) {
-            for (MorseCodeLanguage international : internationalValues) {
-                textCache.put(international.getTextCharacter().charAt(0), international.getMorseCodeCharacter());
-                morseCodeCache.put(international.getMorseCodeCharacter(), international.getTextCharacter());
+        if (morseCodeType.isInternational()) {
+            morseCodeLetters = internationalValues;
+            for (MorseCodeLetter international : internationalValues) {
+                textCache.put(international.alphanumeric().charAt(0), international.morseChar());
+                morseCodeCache.put(international.morseChar(), international.alphanumeric());
             }
-        } else if (MorseCodeType.AMERICAN.equals(morseCodeType)) {
-            for (MorseCodeLanguage american : americanValues) {
-                textCache.put(american.getTextCharacter().charAt(0), american.getMorseCodeCharacter());
-                morseCodeCache.put(american.getMorseCodeCharacter(), american.getTextCharacter());
+        } else if (morseCodeType.isAmerican()) {
+            morseCodeLetters = americanValues;
+            for (MorseCodeLetter american : americanValues) {
+                textCache.put(american.alphanumeric().charAt(0), american.morseChar());
+                morseCodeCache.put(american.morseChar(), american.alphanumeric());
             }
         }
     }
 
-    static String getMorseCodeCharacter(char character) {
+    static String charToMorse(char character) {
         return textCache.getOrDefault(character, "");
     }
 
-    static String getTextCharacter(String morseCodeCharacter) {
-        return morseCodeCache.getOrDefault(morseCodeCharacter, "");
+    static String morseToChar(String morseChar) {
+        return morseCodeCache.getOrDefault(morseChar, "");
+    }
+
+    static List<MorseCodeLetter> stringToMorseCodeLetters(String morseCode) {
+        final List<MorseCodeLetter> morseCodeLetters = new ArrayList<>();
+        var wordSepRegex = RegexUtils.getWordSeparatorRegex();
+        var letterSepRegex = RegexUtils.getLetterSeparatorRegex();
+
+        for (String word : wordSepRegex.split(morseCode.trim())) {
+            for (String letter : letterSepRegex.split(word)) {
+                for (var morseLetter : morseCodeLetters) {
+                    if (morseLetter.morseChar().equals(letter)) {
+                        morseCodeLetters.add(morseLetter);
+                    }
+                }
+            }
+            morseCodeLetters.add(MorseCodeLanguage.International.SPACE);
+        }
+        morseCodeLetters.remove(morseCodeLetters.size() - 1);
+        return morseCodeLetters;
     }
 }
