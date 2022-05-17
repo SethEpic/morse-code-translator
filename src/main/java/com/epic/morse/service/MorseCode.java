@@ -3,8 +3,8 @@ package com.epic.morse.service;
 import com.epic.morse.exception.MorseCodeException;
 import com.epic.morse.service.languages.MorseCodeLetter;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class MorseCode {
     private final String text;
@@ -12,10 +12,24 @@ public final class MorseCode {
     private final List<MorseCodeLetter> characters;
 
     public MorseCode(String message) {
-        text = message;
+        ValidationService.validateEncode(message);
+        text = message.toUpperCase();
         morse = encode(message);
         characters = MorseCodeSearcher.stringToMorseCodeLetters(morse);
     }
+
+//    public static void main(String[] args) throws Exception {
+//        new MorseCode("Hello World");
+//        System.out.println("===========");
+//        Field field = Unsafe.class.getDeclaredField("theUnsafe");
+//        field.setAccessible(true);
+//        Unsafe unsafe = (Unsafe) field.get(null);
+//        unsafe.setMemory(4000L, 15L, (byte) 1);
+//        System.out.println(encode('A'));
+//        System.out.println(decode(encode('A')));
+//       String[] s = {"Hee", "e", "l", "l", "o", " ", "W", "o", "r", "l", "d"};
+//       System.out.println(Arrays.toString(decode(encode(s))));
+//    }
 
     public String text() {
         return text;
@@ -29,26 +43,16 @@ public final class MorseCode {
         return characters;
     }
 
+    public String decode() {
+        return text;
+    }
+
     public static MorseCode of(String message) {
         return new MorseCode(message);
     }
 
     public static MorseCode of(CharSequence message) {
         return new MorseCode(message.toString());
-    }
-
-    public static void main(String[] args) {
-// System.out.println(encode('a'));
-// System.out.println(decode(encode('a')));
-        String[] s = {"Hee", "e", "l", "l", "o", " ", "W", "o", "r", "l", "d"};
-
-        var strs = List.of(".... . .-.. .-.. ---  .-- --- .-. .-.. -..  .... --- .--  .- .-. .  -.-- --- ..-", "....");
-        String h = "Hello World How are you";
-        System.out.println(encode(h));
-        System.out.println(decode(strs));
-//        var encoded = encode(s);
-//        System.out.println(Arrays.toString(encoded));
-//        System.out.println(Arrays.toString(decode(encoded)));
     }
 
     /**
@@ -96,16 +100,32 @@ public final class MorseCode {
         return Translator.encodeCharArray(characters);
     }
 
+    public static String encode(Number number) {
+        final var text = number.toString();
+        final MorseCodeConfig morseCodeConfig = MorseCodeConfig.getInstance();
+        return Translator.encodeText(text, morseCodeConfig.getWordSeparator(), morseCodeConfig.getLetterSeparator());
+    }
+
     public static List<String> encode(List<String> textList) throws MorseCodeException {
         final MorseCodeConfig morseCodeConfig = MorseCodeConfig.getInstance();
-//        textList.forEach(ValidationService::validateEncode);
         ValidationService.validateEncode(textList);
         return Translator.encodeTextList(textList, morseCodeConfig.getWordSeparator(), morseCodeConfig.getLetterSeparator());
     }
 
+    public static Set<String> encode(Set<String> textSet) throws MorseCodeException {
+        return textSet.stream().map(MorseCode::encode).collect(Collectors.toSet());
+    }
+
+//    public static Set<String> encode(Map<Object, String> textSet) throws MorseCodeException {
+  //      return null;
+    //}
+
     public static CharSequence encode(CharSequence charSequence) throws MorseCodeException {
-//        Optional<CharSequence> morse = Optional.of(encode('1'));
         return encode(charSequence.toString());
+    }
+
+    public static String[] encode(CharSequence[] charSequences) throws MorseCodeException {
+        return Arrays.stream(charSequences).map(MorseCode::encode).map(CharSequence::toString).toArray(String[]::new);
     }
 
     /**
@@ -133,6 +153,11 @@ public final class MorseCode {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(morse, text, characters);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -141,22 +166,11 @@ public final class MorseCode {
     }
 
     @Override
-    public int hashCode() {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((morse == null) ? 0 : morse.hashCode());
-//        result = prime * result + ((text == null) ? 0 : text.hashCode());
-//        result = prime * result + ((characters == null) ? 0 : characters.hashCode());
-//        return result;
-        return Objects.hash(morse, text, characters);
-    }
-
-    @Override
     public String toString() {
-        return "MorseCode{" +
-            "text='" + text + '\'' +
-            ", morse='" + morse + '\'' +
-            ", characters=" + characters +
-            '}';
+        return "MorseCode: {" +
+            "\n  text: '" + text +
+            "',\n  morse: '" + morse +
+            "',\n  characters: " + characters +
+            "\n}";
     }
 }

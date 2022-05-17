@@ -9,14 +9,14 @@
   <groupId>io.github.SethEpic</groupId>
   <artifactId>morse-code-translator</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <url>https://github.com/SethEpic/morse-code-translator</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <java.version>17</java.version>
+    <maven.compiler.source>15</maven.compiler.source>
+    <maven.compiler.target>15</maven.compiler.target>
+    <java.version>15</java.version>
   </properties>
 
   <distributionManagement>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.0-M1</version>
+      <version>5.8.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -127,7 +127,8 @@
         </executions>
         <configuration>
           <show>public</show>
-          <excludePackageNames>com.epic.morse.service.languages:com.epic.morse.service:com.epic.morse.exception</excludePackageNames>
+          <excludePackageNames>com.epic.morse.service.languages:com.epic.morse.service:com.epic.morse.exception
+          </excludePackageNames>
           <failOnError>false</failOnError>
           <failOnWarnings>false</failOnWarnings>
           <nohelp>true</nohelp>

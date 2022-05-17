@@ -103,6 +103,12 @@ public final class MorseCodeConfig {
         RegexUtils.resetInvalidMorseCodeRegex(morseCodeType);
     }
 
+    public void updateConfig(MorseCodeType morseCodeType, String letterSeparator, String wordSeparator) {
+        setMorseCodeType(morseCodeType);
+        setLetterSeparator(letterSeparator);
+        setWordSeparator(wordSeparator);
+    }
+
     public void reset() {
         resetMorseCodeType();
         resetWordSeparator();

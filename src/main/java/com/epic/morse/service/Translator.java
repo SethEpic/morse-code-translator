@@ -1,6 +1,7 @@
 package com.epic.morse.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ final class Translator {
         final String[] encodedMessages = new String[messages.length];
 
         for (int i = 0; i < messages.length; i++) {
-            if (messages[i].isBlank()) {
+            if (!messages[i].isEmpty() && messages[i].isBlank()) {
                 encodedMessages[i] = wordSeparator;
                 continue;
             }
@@ -86,7 +87,7 @@ final class Translator {
 
     static List<String> decodeMorseCodeList(List<String> morseCode, final Pattern wordSepRegex, final Pattern letterSepRegex) {
         return morseCode.stream().map(morse -> (!wordSepRegex.matcher(morse).find() && !letterSepRegex.matcher(morse).find()) ?
-            MorseCodeSearcher.morseToChar(morse) :
-            decodeMorseCode(morse, wordSepRegex, letterSepRegex)).collect(Collectors.toList());
+                MorseCodeSearcher.morseToChar(morse) :
+                decodeMorseCode(morse, wordSepRegex, letterSepRegex)).collect(Collectors.toList());
     }
 }

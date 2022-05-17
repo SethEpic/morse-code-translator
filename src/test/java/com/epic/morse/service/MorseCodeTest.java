@@ -173,6 +173,13 @@ public class MorseCodeTest {
         assertDecodeArrayEquals(decoded);
     }
 
+    @Test
+    public void encodeWithMorseCodeObject() {
+        MorseCode morseCode = new MorseCode(test);
+        assertEquals(testMorseCode, morseCode.morse());
+        assertEquals(test.toUpperCase(), morseCode.text());
+    }
+
     private void execute(String testValue, String expectedMorseCode) {
         var morseCode = MorseCode.encode(testValue);
         assertNotNull(morseCode, "convertToMorseCode Should NEVER return null");

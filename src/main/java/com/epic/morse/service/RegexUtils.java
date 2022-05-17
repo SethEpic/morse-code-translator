@@ -1,10 +1,10 @@
 package com.epic.morse.service;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 final class RegexUtils {
-    private static final List<String> escapeChars = List.of("^", "\\", "|", "[", "]", "+");
+    private static final String[] escapeChars = {"^", "\\", "|", "[", "]", "+"};
+    //    private static final Pattern escapeChars = Pattern.compile("[\\^\\\\|\\[\\]+]");
     static final Pattern multiSpaceRegex = Pattern.compile("\\s+");
     //    private static final StringBuilder separatorRegexStart = new StringBuilder("(?<=\\.|-|\\s*)");
 //    private static final StringBuilder separatorRegexEnd = new StringBuilder("(?=\\.|-|\\s*)");
@@ -42,12 +42,7 @@ final class RegexUtils {
     }
 
     static void resetInvalidMorseCodeRegex(MorseCodeType morseCodeType) {
-        if (morseCodeType.isInternational()) {
-            invalidMorseCodeRegex = Pattern.compile("([^-.\\s]+)");
-//            invalidMorseCodeRegex = Pattern.compile("([^-.|/\\s]+)");
-        } else {
-            invalidMorseCodeRegex = Pattern.compile("([^-⸺⸻.|/\\s]+)");
-        }
+        invalidMorseCodeRegex = morseCodeType.isInternational() ? Pattern.compile("([^-.\\s]+)") : Pattern.compile("([^-⸺⸻.|/\\s]+)");
     }
 
     private static String createSeparatorRegex(String separator, MorseCodeType morseCodeType) {

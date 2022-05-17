@@ -14,6 +14,8 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 
+# ij_java_enum_constants_wrap = on_every_item
+
 # We recommend you to keep these unchanged
 end_of_line = lf
 charset = utf-8

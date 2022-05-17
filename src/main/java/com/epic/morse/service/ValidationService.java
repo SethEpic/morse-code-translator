@@ -20,7 +20,7 @@ final class ValidationService {
         ValidationService.letterSeparator = letterSeparator;
     }
 
-    public static void validateEncode(String text) {
+    public static void validateEncode(CharSequence text) {
         if (text == null) {
             throw new MorseCodeException(ExceptionMessages.VALIDATION_ERROR_1);
         }
@@ -31,21 +31,27 @@ final class ValidationService {
     }
 
     public static void validateEncode(String[] texts) {
+        if (texts == null) throw new MorseCodeException("Array of strings is null");
+        if (texts.length == 0) throw new MorseCodeException("Array of strings is empty");
+
         for (int i = 0; i < texts.length; i++) {
             try {
                 validateEncode(texts[i]);
             } catch (MorseCodeException morseCodeException) {
-                throw new MorseCodeException(String.format(morseCodeException.getErrorMessage() + " | Occurred at array index(%s)", i));
+                throw new MorseCodeException(String.format(morseCodeException.getErrorMessage() + " | Occurred at array index(%s) | Value: %s", i, texts[i]));
             }
         }
     }
 
     public static void validateEncode(List<String> texts) {
+        if (texts == null) throw new MorseCodeException("List of strings is null");
+        if (texts.isEmpty()) throw new MorseCodeException("List of strings is empty");
+
         for (int i = 0; i < texts.size(); i++) {
             try {
                 validateEncode(texts.get(i));
             } catch (MorseCodeException morseCodeException) {
-                throw new MorseCodeException(String.format(morseCodeException.getErrorMessage() + " | Occurred at list index(%s)", i));
+                throw new MorseCodeException(String.format(morseCodeException.getErrorMessage() + " | Occurred at list index(%s) | Value: %s", i, texts.get(i)));
             }
         }
     }
